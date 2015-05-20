@@ -69,4 +69,6 @@ public class Node {
 	public void updateG(int cost) {
 		g += cost;
 	}
+
+
 }

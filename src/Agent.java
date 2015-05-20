@@ -10,10 +10,13 @@ import java.io.*;
 import java.net.*;
 
 public class Agent {
-
+	
+	static Map map;
+	
 	public char get_action( char view[][] ) {
 
-		// REPLACE THIS CODE WITH AI TO CHOOSE ACTION
+		map = new Map(view); // THIS IS BAD
+		map.printMap();
 
 		int ch=0;
 		
@@ -53,6 +56,7 @@ public class Agent {
 			System.out.println("|");
 		}
 		System.out.println("+-----+");
+		
 	}
 
 	public static void main( String[] args ) {
