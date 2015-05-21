@@ -11,6 +11,7 @@ import java.net.*;
 
 public class Agent {
 
+	//Code that agent uses to select an action
 	public char get_action( char view[][] ) {
 
 		// REPLACE THIS CODE WITH AI TO CHOOSE ACTION
@@ -37,6 +38,7 @@ public class Agent {
 		return 0;
 	}
 
+	//Merely prints the game state to the console
 	void print_view( char view[][] ){
 		int i,j;
 
