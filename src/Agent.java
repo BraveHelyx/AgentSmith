@@ -10,14 +10,12 @@ import java.io.*;
 import java.net.*;
 
 public class Agent {
-<<<<<<< HEAD
 
 	//Code that agent uses to select an action
-=======
+
 	
 	static Map map;
 	
->>>>>>> 048eaf5b7c7d4cee18e5165012e86242a8350cca
 	public char get_action( char view[][] ) {
 
 		map = new Map(view); // THIS IS BAD
