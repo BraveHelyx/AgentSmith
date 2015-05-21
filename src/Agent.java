@@ -10,11 +10,18 @@ import java.io.*;
 import java.net.*;
 
 public class Agent {
+<<<<<<< HEAD
 
 	//Code that agent uses to select an action
+=======
+	
+	static Map map;
+	
+>>>>>>> 048eaf5b7c7d4cee18e5165012e86242a8350cca
 	public char get_action( char view[][] ) {
 
-		// REPLACE THIS CODE WITH AI TO CHOOSE ACTION
+		map = new Map(view); // THIS IS BAD
+		map.printMap();
 
 		int ch=0;
 		
@@ -55,6 +62,7 @@ public class Agent {
 			System.out.println("|");
 		}
 		System.out.println("+-----+");
+		
 	}
 
 	public static void main( String[] args ) {
