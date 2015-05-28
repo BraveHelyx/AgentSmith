@@ -38,13 +38,13 @@ public class Compass {
 		
 		if(agentDir == 0){
 			//North
-			newY++;
+			newY--;
 		} else if(agentDir == 1){
 			//East
 			newX++;
 		} else if(agentDir == 2){
 			//South
-			newY--;
+			newY++;
 		} else {
 			//West
 			newX--;
