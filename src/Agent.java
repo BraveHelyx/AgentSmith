@@ -13,7 +13,6 @@ public class Agent {
 
 	//Code that agent uses to select an action
 
-	
 	Map map = new Map();
 	Compass compass = new Compass();
 	
@@ -35,7 +34,10 @@ public class Agent {
 	            switch( ch ) { // if character is a valid action, return it
 	            case 'F':
 	            case 'f':
-	            	compass.setAgentPosition(compass.getForwardPosition());
+	            	char inFront = view[1][2]; // character directly in front of agent
+	            	if(!(inFront == 'T' || inFront == '*' || inFront == '.')) {		// check agent can actually move forward
+	            		compass.setAgentPosition(compass.getForwardPosition());
+	            	}
 	            	return (char) ch;
 	            	
 	            case 'L':
