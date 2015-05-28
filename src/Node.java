@@ -2,7 +2,7 @@
 /*
  * Node class for each x, y value in the map.
  */
-public class Node {
+public class Node implements Comparable<Node> {
 	
 	private int x;
 	private int y;
@@ -70,5 +70,8 @@ public class Node {
 		g += cost;
 	}
 
-
+	@Override
+	public int compareTo(Node other) {
+		return this.f() - other.f();
+	}
 }
