@@ -14,11 +14,13 @@ public class Agent {
 	//Code that agent uses to select an action
 
 	
-	static Map map;
+	Map map = new Map();
+	Compass compass = new Compass();
 	
 	public char get_action( char view[][] ) {
-
-		map = new Map(view); // THIS IS BAD
+		
+		
+		map.update(view, compass);
 		map.printMap();
 
 		int ch=0;
@@ -31,8 +33,25 @@ public class Agent {
 	            ch  = System.in.read();
 	
 	            switch( ch ) { // if character is a valid action, return it
-	            case 'F': case 'L': case 'R': case 'C': case 'B':
-	            case 'f': case 'l': case 'r': case 'c': case 'b':
+	            case 'F':
+	            case 'f':
+	            	compass.setAgentPosition(compass.getForwardPosition());
+	            	return (char) ch;
+	            	
+	            case 'L':
+	            case 'l':
+	            	compass.turnLeft();
+	            	return (char) ch;
+	            	
+	            case 'R':
+	            case 'r':
+	            	compass.turnRight();
+	            	return (char) ch;
+	            	
+	            case 'C':
+	            case 'c':
+	            case 'B':	            	
+	            case 'b':
 	               return((char) ch );
                }
 			}
