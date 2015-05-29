@@ -14,11 +14,19 @@ public class Agent {
 	//Code that agent uses to select an action
 
 	
-	static Map map;
+	private Compass compass;
+	private Inventory inventory;
+	private Map map;
 	
+	public Agent(){
+		//Initialise all components of agent
+		compass = new Compass();
+		inventory = new Inventory();
+		map = new Map();
+	}
 	public char get_action( char view[][] ) {
 
-		map = new Map(view); // THIS IS BAD
+		map.update(view); //Updates the map with the new view window
 		map.printMap();
 
 		int ch=0;
@@ -104,7 +112,7 @@ public class Agent {
 					}
 				}
 				agent.print_view( view ); // COMMENT THIS OUT BEFORE SUBMISSION
-				action = agent.get_action( view );
+				action = agent.get_action( view ); //Agent called here on each iteration
 				out.write( action );
 			}
 		}

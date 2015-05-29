@@ -21,7 +21,7 @@ public class Compass {
 	
 	// Constructor for new maps
 	public Compass(){
-		agentPos = new BountyPoint(0, 0);
+		agentPos = new BountyPoint(40, 40);
 		agentDir = 0;
 	}
 	
@@ -38,13 +38,13 @@ public class Compass {
 		
 		if(agentDir == 0){
 			//North
-			newY++;
+			newY--;
 		} else if(agentDir == 1){
 			//East
 			newX++;
 		} else if(agentDir == 2){
 			//South
-			newY--;
+			newY++;
 		} else {
 			//West
 			newX--;
