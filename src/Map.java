@@ -5,44 +5,38 @@
  * Map consisting of a character array of each possible item.
  * Unknown elements are denoted as ` to start with.
  * 
- * The initial Map is updated with all squares in the view.
- * Future updates will only need to update the first 5 in 'front' of the agent.
- * 
- * @param itemMap		2 dimensional array of Node objects storing node information
- * 
- * 
+ * The initial Map is populated with ` characters.
+ * On the first update, all values in view are placed on the map.
+ * Subsequent updates only update the first 5 elements in front of the agent
+ *  as well as directly in front (in case an item is used),
+ *  and directly behind (to clear last agent position or set down boat).
+ *   
  */
 public class Map {
 	
-	private Node[][] itemMap;
+	private Node itemMap[][];
 	private static int MAXEDGE = 80;
-	private boolean initFlag;
-	private BountyPoint coordinateOffset;
+	private int posX;
+	private int posY;
 	private int facing;
+	private boolean initUpdate;
 	
-	/*
-	 * Constructor for map
-	 */
 	public Map() {
 		init();
+		initUpdate = false;
 	}
 	
-	/*
-	 * Initialises the Map
-	 */
 	public void init() {
-		itemMap = new Node[MAXEDGE][MAXEDGE];
-		coordinateOffset = new BountyPoint(MAXEDGE/2,MAXEDGE/2);
-		facing = 0;
-		initFlag = false;
+		posX = MAXEDGE/2;
+		posY = MAXEDGE/2;
 		
-		//Fills nodes with undiscovered symbol '`'
-		for(int i = 0; i < MAXEDGE; i++) {
-			for(int j = 0; j < MAXEDGE; j++) {
-				itemMap[i][j] = new Node(j, i, '`', 0, 0);
+		itemMap = new Node[MAXEDGE][MAXEDGE];
+		
+		for(int j = 0; j < MAXEDGE; j++) {
+			for(int i = 0; i < MAXEDGE; i++) {
+				itemMap[i][j] = new Node(i, j, '`', 0, 0);
 			}
 		}
-		
 	}
 	
 	public Node[][] getMap() {
@@ -53,44 +47,91 @@ public class Map {
 	 * Method that processes the very first view.
 	 */
 	private void initUpdate(char[][] view) {
-		int x;
-		int y;
-		
-		for(int i = 0; i < 5; i++) {
-			for(int j = 0; j < 5; j++) {
-				x = coordinateOffset.getX() + i - 2; // correct for global map
-				y = coordinateOffset.getY() + j - 2;
+		int x, y;
+
+		for(int j = 0; j < 5; j++) {
+			y = posY- 2 + j;
+			for(int i = 0; i < 5; i++) {
+				x = posX - 2 + i;
 				if((i == 2) && (j == 2)){
-					itemMap[x][y].setItem('^'); // put the agent icon in the middle
+					itemMap[x][y].setItem('^');			// put the agent icon in the middle
 				} else {
-					itemMap[x][y].setItem(view[i][j]);
+					itemMap[x][y].setItem(view[j][i]);	// view provides row, col. -> change to col, row for x, y.
 				}
 			}
 		}
 	}
 	
-	/*
-	 * Updates the local memory map with a new view window
-	 */
-	public void update(char[][] view) {
-		
-		//Run once to initialise the 5x5 cell	
-		if(initFlag == false){
+	public void update(char[][] view, Compass compass) {
+		if(!initUpdate) {
 			initUpdate(view);
-			initFlag = true;
+			compass.setAgentPosition(posX, posY);
+			initUpdate = true;
 		} else {
-			//Runs all other times, either updating a new row of 5 cells, or not updating at all
+			facing = compass.getAgentDirection();
+			posX = compass.getAgentPosition().getX();
+			posY = compass.getAgentPosition().getY();
+			int x, y;
 			
+			switch(facing){
+			case 0:
+				// North
+				for(int i = 0; i < 5; i++) {
+					x = posX - 2 + i;
+					y = posY - 2;
+					itemMap[x][y].setItem(view[0][i]);
+				}
+				
+				itemMap[posX][posY-1].setItem(view[1][2]);	// update directly in front
+				itemMap[posX][posY].setItem('^');			// set agent position
+				itemMap[posX][posY+1].setItem(view[3][2]);	// update directly behind
+				break;
+				
+			case 1:
+				// East
+				for(int j = 0; j < 5; j++) {
+					x = posX + 2;
+					y = posY - 2 + j;
+					itemMap[x][y].setItem(view[0][j]);
+				}
+				
+				itemMap[posX+1][posY].setItem(view[1][2]);	// update directly in front
+				itemMap[posX][posY].setItem('>');			// set agent position
+				itemMap[posX-1][posY].setItem(view[3][2]);	// update directly behind
+				break;
+				
+			case 2:
+				// South
+				for(int i = 0; i < 5; i++) {
+					x = posX + 2 - i;
+					y = posY + 2;
+					itemMap[x][y].setItem(view[0][i]);
+				}
+				
+				itemMap[posX][posY+1].setItem(view[1][2]);	// update directly in front
+				itemMap[posX][posY].setItem('v');			// set agent position
+				itemMap[posX][posY-1].setItem(view[3][2]);	// update directly behind
+				break;
+			
+			case 3:
+				// West
+				for(int j = 0; j < 5; j++) {
+					x = posX - 2;
+					y = posY + 2 - j;
+					itemMap[x][y].setItem(view[0][j]);
+				}
+				
+				itemMap[posX-1][posY].setItem(view[1][2]);	// update directly in front
+				itemMap[posX][posY].setItem('<');			// set agent position
+				itemMap[posX+1][posY].setItem(view[3][2]);	// update directly behind
+				break;
+			}
 		}
 	}
 	
-	/*
-	 * TODO Write functions that update localX and localY based on the direction the agent is facing.
-	 */
-	
 	public void printMap() {
-		for(int i = 0; i < MAXEDGE; i++) {
-			for(int j = 0; j < MAXEDGE; j++) {
+		for(int j = 0; j < MAXEDGE; j++) {
+			for(int i = 0; i < MAXEDGE; i++) {
 				System.out.print(itemMap[i][j].getItem());
 			}
 			System.out.print('\n');

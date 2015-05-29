@@ -13,20 +13,13 @@ public class Agent {
 
 	//Code that agent uses to select an action
 
+	Map map = new Map();
+	Compass compass = new Compass();
 	
-	private Compass compass;
-	private Inventory inventory;
-	private Map map;
-	
-	public Agent(){
-		//Initialise all components of agent
-		compass = new Compass();
-		inventory = new Inventory();
-		map = new Map();
-	}
 	public char get_action( char view[][] ) {
-
-		map.update(view); //Updates the map with the new view window
+		
+		
+		map.update(view, compass);
 		map.printMap();
 
 		int ch=0;
@@ -39,8 +32,28 @@ public class Agent {
 	            ch  = System.in.read();
 	
 	            switch( ch ) { // if character is a valid action, return it
-	            case 'F': case 'L': case 'R': case 'C': case 'B':
-	            case 'f': case 'l': case 'r': case 'c': case 'b':
+	            case 'F':
+	            case 'f':
+	            	char inFront = view[1][2]; // character directly in front of agent
+	            	if(!(inFront == 'T' || inFront == '*' || inFront == '.')) {		// check agent can actually move forward
+	            		compass.setAgentPosition(compass.getForwardPosition());
+	            	}
+	            	return (char) ch;
+	            	
+	            case 'L':
+	            case 'l':
+	            	compass.turnLeft();
+	            	return (char) ch;
+	            	
+	            case 'R':
+	            case 'r':
+	            	compass.turnRight();
+	            	return (char) ch;
+	            	
+	            case 'C':
+	            case 'c':
+	            case 'B':	            	
+	            case 'b':
 	               return((char) ch );
                }
 			}
@@ -112,7 +125,7 @@ public class Agent {
 					}
 				}
 				agent.print_view( view ); // COMMENT THIS OUT BEFORE SUBMISSION
-				action = agent.get_action( view ); //Agent called here on each iteration
+				action = agent.get_action( view );
 				out.write( action );
 			}
 		}
