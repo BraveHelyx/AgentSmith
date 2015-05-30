@@ -62,6 +62,13 @@ public class Node implements Comparable<Node> {
 		item = item_;
 	}
 	
+	public boolean isHeuristic(){
+		if(item == 'g' || item == 'a' || item == 'd' || item == 'B'){
+			return true;
+		}
+		return false;
+	}
+	
 	public void updateH(int cost) {
 		h += cost;
 	}
@@ -73,5 +80,10 @@ public class Node implements Comparable<Node> {
 	@Override
 	public int compareTo(Node other) {
 		return this.f() - other.f();
+	}
+	
+	@Override
+	public Node clone(){
+		return new Node(x, y, item, h, g);
 	}
 }

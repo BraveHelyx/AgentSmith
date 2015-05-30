@@ -15,10 +15,12 @@
 public class Map {
 	
 	private Node itemMap[][];
-	private static int MAXEDGE = 80;
+	public static int MAXEDGE = 80;
 	private int posX;
 	private int posY;
 	private int facing;
+	
+	//Flags
 	private boolean initUpdate;
 	
 	public Map() {
@@ -27,11 +29,14 @@ public class Map {
 	}
 	
 	public void init() {
+		
+		//Sets the agent's initial position
 		posX = MAXEDGE/2;
 		posY = MAXEDGE/2;
 		
 		itemMap = new Node[MAXEDGE][MAXEDGE];
 		
+		//Initialise the map with nodes containing undiscovered symbols
 		for(int j = 0; j < MAXEDGE; j++) {
 			for(int i = 0; i < MAXEDGE; i++) {
 				itemMap[i][j] = new Node(i, j, '`', 0, 0);
@@ -63,19 +68,22 @@ public class Map {
 	}
 	
 	public void update(char[][] view, Compass compass) {
-		if(!initUpdate) {
+		if(!initUpdate) {	//Run Once
 			initUpdate(view);
 			compass.setAgentPosition(posX, posY);
 			initUpdate = true;
 		} else {
+			//Get Agent direction
 			facing = compass.getAgentDirection();
+			
+			//Get agent coordinate
 			posX = compass.getAgentPosition().getX();
 			posY = compass.getAgentPosition().getY();
 			int x, y;
 			
+			//Decide where to update
 			switch(facing){
-			case 0:
-				// North
+			case 0:		//NORTH
 				for(int i = 0; i < 5; i++) {
 					x = posX - 2 + i;
 					y = posY - 2;
@@ -87,8 +95,7 @@ public class Map {
 				itemMap[posX][posY+1].setItem(view[3][2]);	// update directly behind
 				break;
 				
-			case 1:
-				// East
+			case 1:		// EAST
 				for(int j = 0; j < 5; j++) {
 					x = posX + 2;
 					y = posY - 2 + j;
@@ -100,8 +107,7 @@ public class Map {
 				itemMap[posX-1][posY].setItem(view[3][2]);	// update directly behind
 				break;
 				
-			case 2:
-				// South
+			case 2:		// SOUTH
 				for(int i = 0; i < 5; i++) {
 					x = posX + 2 - i;
 					y = posY + 2;
@@ -113,8 +119,7 @@ public class Map {
 				itemMap[posX][posY-1].setItem(view[3][2]);	// update directly behind
 				break;
 			
-			case 3:
-				// West
+			case 3:		// WEST
 				for(int j = 0; j < 5; j++) {
 					x = posX - 2;
 					y = posY + 2 - j;

@@ -9,59 +9,98 @@ import java.util.*;
 import java.io.*;
 import java.net.*;
 
+import com.sun.jmx.remote.internal.ArrayQueue;
+
 public class Agent {
 
 	//Code that agent uses to select an action
 
 	Map map = new Map();
 	Compass compass = new Compass();
+	Inventory inventory = new Inventory();
+	
+	//Create a list of moves (in a queue) to follow until completion
+	Queue<Character> moveList = new LinkedList<Character>();
+	
+	ArrayList<Node> heuristicsSeen = new ArrayList<Node>();
+	ArrayList<Node> heuristicsObtainable = new ArrayList<Node>();
+	ArrayList<Node> heuristicsUnobtainable = new ArrayList<Node>();
 	
 	public char get_action( char view[][] ) {
 		
-		
+		//Update the local copy of the map with the new view
 		map.update(view, compass);
 		map.printMap();
 
 		int ch=0;
 		
-		System.out.print("Enter Action(s): ");
+		//
+		char returnedMove;
+		String nextMoves;
+		
+//		System.out.print("Enter Action(s): ");
 
+		//If no moves to process
+		if(moveList.isEmpty()){
+			
+			//Obtain a strategy to proceed with
+			Strategy chosenStrategy = decideStrategy(map);
+			
+			//Retrieve a string (single or many characters which decides what to do)
+			nextMoves = chosenStrategy.decideMove(map);
+			
+			//Add all the characters individually to the moveList
+			for(char c : nextMoves.toCharArray()){
+				moveList.add(c);
+			}
+		}
+
+		returnedMove = moveList.poll();
+		
+		//Update the local assets with the new move
+		updateLocalAssets(returnedMove);
+		
+		//Wait until we give permission to make the move (via keyboard input)
 		try {
-			while ( ch != -1 ) {
+			while ( ch != -1 ) {				
 				// read character from keyboard
 	            ch  = System.in.read();
-	
-	            switch( ch ) { // if character is a valid action, return it
-	            case 'F':
-	            case 'f':
-	            	char inFront = view[1][2]; // character directly in front of agent
-	            	if(!(inFront == 'T' || inFront == '*' || inFront == '.')) {		// check agent can actually move forward
-	            		compass.setAgentPosition(compass.getForwardPosition());
-	            	}
-	            	return (char) ch;
-	            	
-	            case 'L':
-	            case 'l':
-	            	compass.turnLeft();
-	            	return (char) ch;
-	            	
-	            case 'R':
-	            case 'r':
-	            	compass.turnRight();
-	            	return (char) ch;
-	            	
-	            case 'C':
-	            case 'c':
-	            case 'B':	            	
-	            case 'b':
-	               return((char) ch );
-               }
 			}
 		} catch (IOException e) {
 			System.out.println ("IO error:" + e );
 		}
+		
+		//Print the move out for inspection
+		System.out.println("Agent chose: " + returnedMove);
+		
+		return returnedMove;
 
-		return 0;
+	}
+
+	public void updateLocalAssets(char move){
+		switch( move ) { // if character is a valid action, return it
+        case 'F':
+        case 'f':
+    		compass.setAgentPosition(compass.getForwardPosition());
+    		break;
+    		
+        case 'L':
+        case 'l':
+        	compass.turnLeft();
+        	break;
+        	
+        case 'R':
+        case 'r':
+        	compass.turnRight();
+        	break;
+        	
+        case 'C':
+        case 'c':
+        	break;
+        case 'B':	            	
+        case 'b':
+        	inventory.useDynamite();   	
+        }
 	}
 
 	//Merely prints the game state to the console
@@ -139,4 +178,41 @@ public class Agent {
 			catch( IOException e ) {}
 		}
 	}
+	
+	/**
+	 * Method that decides which strategy to perform
+	 * 
+	 * @param map		The current map object to scan.
+	 */
+	Strategy decideStrategy(Map map){
+		//Adds all the nodes that are heuristics to the seen heuristics 
+		scanForHeuristics(map);	
+		
+		//Placeholder code to demonstrate how this function works. Will change rapidly.
+		if(heuristicsSeen.isEmpty()){
+			return new ExploreStrategy();
+		} else {
+			return new RunStrategy();
+		}
+	}
+	
+	/**
+	 * Method that scans a map and adds all nodes that are heuristics to the 
+	 * list of seen heuristics.
+	 */
+	public void scanForHeuristics(Map map){
+		Node[][] currentMap = map.getMap();
+		
+		int i = 0;
+		int j = 0;
+		for(i = 0; i < Map.MAXEDGE; i++){
+			for(j = 0; j < Map.MAXEDGE; j++){
+				if(currentMap[i][j].isHeuristic()){
+					heuristicsSeen.add(currentMap[i][j].clone());
+				}
+			}
+		}
+	}
+	
+	
 }
