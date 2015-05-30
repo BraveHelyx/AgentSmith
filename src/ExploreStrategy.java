@@ -19,6 +19,10 @@ public class ExploreStrategy implements Strategy{
 		return moves;
 	}
 	
+	/**
+	 * Does a search in each direction for the closest unknown tile and finds the minimum value.
+	 * It then sets moves to the appropriate agent moves. 
+	 */
 	private void doSearch() {
 		
 		int distance = 199;
@@ -28,6 +32,7 @@ public class ExploreStrategy implements Strategy{
 		int south = distanceToUnknown(Compass.SOUTH);
 		int west = distanceToUnknown(Compass.WEST);
 		
+		// find minimum distance and set direction to go in.
 		if(north < distance) {
 			distance = north;
 			direction = Compass.NORTH;
@@ -42,16 +47,18 @@ public class ExploreStrategy implements Strategy{
 			direction = Compass.WEST;
 		}
 		
+		
+		// set moves to go in the right direction
 		switch(facing) {
 		case 0:
 			if(direction == 0) {
 				moves = "F";
 			} else if(direction == 1) {
-				moves = "RF";
+				moves = "R";
 			} else if(direction == 2) {
-				moves = "RRF";
+				moves = "RR";
 			} else if(direction == 3) {
-				moves = "LF";
+				moves = "L";
 			}
 			break;
 			
@@ -59,11 +66,11 @@ public class ExploreStrategy implements Strategy{
 			if(direction == 1) {
 				moves = "F";
 			} else if(direction == 2) {
-				moves = "RF";
+				moves = "R";
 			} else if(direction == 3) {
-				moves = "RRF";
+				moves = "RR";
 			} else if(direction == 0) {
-				moves = "LF";
+				moves = "L";
 			}
 			break;
 			
@@ -71,11 +78,11 @@ public class ExploreStrategy implements Strategy{
 			if(direction == 2) {
 				moves = "F";
 			} else if(direction == 3) {
-				moves = "RF";
+				moves = "R";
 			} else if(direction == 0) {
-				moves = "RRF";
+				moves = "RR";
 			} else if(direction == 1) {
-				moves = "LF";
+				moves = "L";
 			}
 			break;
 		
@@ -83,11 +90,11 @@ public class ExploreStrategy implements Strategy{
 			if(direction == 3) {
 				moves = "F";
 			} else if(direction == 0) {
-				moves = "RF";
+				moves = "R";
 			} else if(direction == 1) {
-				moves = "RRF";
+				moves = "RR";
 			} else if(direction == 2) {
-				moves = "LF";
+				moves = "L";
 			}
 			break;
 		}		
@@ -96,11 +103,11 @@ public class ExploreStrategy implements Strategy{
 	
 	/**
 	 * Checks nodes along a compass direction until it finds an unknown and returns the number of
-	 * spaces in between.
+	 * spaces in between. Stops check if node is an obstacle.
 	 * 
 	 * @param direction the direction to check in
 	 * 
-	 * @return the number of numSpaces to the nearest unknown or a very large number
+	 * @return the number of numSpaces to the nearest unknown or a very large number if obstacle
 	 */
 	public int distanceToUnknown(int direction) {
 		
@@ -113,16 +120,19 @@ public class ExploreStrategy implements Strategy{
 			while(y > 0) {
 				y -= 1;
 				numSpaces += 1;
-				if(itemMap[x][y].getItem() == '`') {
-					return numSpaces;
-				}
-				else if(itemMap[x][y].isObstacle()) {
-					// check for visibility past the wall or tree
+				
+				if(itemMap[x][y].isObstacle()) {
 					if(itemMap[x][y-1].getItem() == '`') {
-						return numSpaces+1;
+						return numSpaces + 1;
 					} else {
 						return 200; // Arbitrarily large number
-					}					
+					}
+				}
+				
+				for(int i = -2; i < 2; i++) {
+					if(itemMap[x+i][y].getItem() == '`') {
+						return numSpaces;
+					}
 				}
 			}
 			return 200;
@@ -131,16 +141,19 @@ public class ExploreStrategy implements Strategy{
 			while(x < Map.MAXEDGE) {
 				x += 1;
 				numSpaces += 1;
-				if(itemMap[x][y].getItem() == '`') {
-					return numSpaces;
-				}
-				else if(itemMap[x][y].getItem() == '*' || itemMap[x][y].getItem() == 'T') {
-					// check for visibility past the wall or tree
+				
+				if(itemMap[x][y].isObstacle()) {
 					if(itemMap[x+1][y].getItem() == '`') {
-						return numSpaces+1;
+						return numSpaces + 1;
 					} else {
-						return 200; // Arbitrarily large number
-					}					
+						return 200; // Arbitrarily large number				
+					}
+				}
+				
+				for(int i = -2; i < 2; i++) {
+					if(itemMap[x][y+i].getItem() == '`') {
+						return numSpaces;
+					}
 				}
 			}
 			return 200;
@@ -149,16 +162,19 @@ public class ExploreStrategy implements Strategy{
 			while(y < Map.MAXEDGE) {
 				y += 1;
 				numSpaces += 1;
-				if(itemMap[x][y].getItem() == '`') {
-					return numSpaces;
-				}
-				else if(itemMap[x][y].getItem() == '*' || itemMap[x][y].getItem() == 'T') {
-					// check for visibility past the wall or tree
-					if(itemMap[x][y+1].getItem() == '`') {
-						return numSpaces+1;
+				
+				if(itemMap[x][y].isObstacle()) {
+					if(itemMap[y+1][x].getItem() == '`') {
+						return numSpaces + 1;
 					} else {
-						return 200; // Arbitrarily large number
-					}					
+						return 200; // Arbitrarily large number	
+					}			
+				}
+				
+				for(int i = -2; i < 2; i++) {
+					if(itemMap[x+i][y].getItem() == '`') {
+						return numSpaces;
+					}
 				}
 			}
 			return 200;
@@ -167,20 +183,24 @@ public class ExploreStrategy implements Strategy{
 			while(x > 0) {
 				x -= 1;
 				numSpaces += 1;
-				if(itemMap[x][y].getItem() == '`') {
-					return numSpaces;
-				}
-				else if(itemMap[x][y].getItem() == '*' || itemMap[x][y].getItem() == 'T') {
-					// check for visibility past the wall or tree
+				
+				if(itemMap[x][y].isObstacle()) {
 					if(itemMap[x-1][y].getItem() == '`') {
-						return numSpaces+1;
+						return numSpaces + 1;
 					} else {
-						return 200; // Arbitrarily large number
-					}					
+						return 200; // Arbitrarily large number		
+					}
+				}
+				
+				for(int i = -2; i < 2; i++) {
+					if(itemMap[x][y+i].getItem() == '`') {
+						return numSpaces;
+					}
 				}
 			}
+			return 200;
 		}
-		return 0;
+		return 200;
 	}
 
 }

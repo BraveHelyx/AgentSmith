@@ -6,6 +6,7 @@
 */
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.io.*;
 import java.net.*;
 
@@ -57,11 +58,19 @@ public class Agent {
 
 		returnedMove = moveList.poll();
 		
+		char inFront = view[1][2]; // character directly in front of agent
+    	if(inFront == 'T' || inFront == '*' || inFront == '.') {
+    		if(returnedMove == 'F' || returnedMove == 'f') {
+    			returnedMove = 'R';
+    			System.out.println("Agent just tried to move forward. He was redirected.");
+    		}
+    	}
+		
 		//Update the local assets with the new move
 		updateLocalAssets(returnedMove);
 		
 		//Wait until we give permission to make the move (via keyboard input)
-		
+		/*
 		try {
 			while ( ch != -1 ) {				
 				// read character from keyboard
@@ -70,7 +79,14 @@ public class Agent {
 		} catch (IOException e) {
 			System.out.println ("IO error:" + e );
 		}
+		*/
 		
+		// delay
+		try {
+			TimeUnit.MILLISECONDS.sleep(500);
+		} catch (InterruptedException e) {
+			System.out.println("Interrupt Exception" + e);
+		}
 		
 		//Print the move out for inspection
 		System.out.println("Agent chose: " + returnedMove);
