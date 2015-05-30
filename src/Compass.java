@@ -18,7 +18,6 @@
 public class Compass {
 	private BountyPoint agentPos;
 	private int agentDir;
-	
 	public final static int NORTH = 0;
 	public final static int EAST = 1;
 	public final static int SOUTH = 2;
@@ -27,7 +26,7 @@ public class Compass {
 	// Constructor for new maps
 	public Compass(){
 		agentPos = new BountyPoint(40, 40);
-		agentDir = 0;
+		agentDir = NORTH;
 	}
 	
 	// Overloaded constructor for cloning maps

@@ -6,6 +6,7 @@
 */
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.io.*;
 import java.net.*;
 
@@ -69,10 +70,19 @@ public class Agent {
 		//Pop a value off the moveList
 		returnedMove = moveList.poll();
 		
+		char inFront = view[1][2]; // character directly in front of agent
+    	if(inFront == 'T' || inFront == '*' || inFront == '.') {
+    		if(returnedMove == 'F' || returnedMove == 'f') {
+    			returnedMove = 'R';
+    			System.out.println("Agent just tried to move forward. He was redirected.");
+    		}
+    	}
+		
 		//Update the local assets with the new move
 		updateLocalAssets(returnedMove);
 		
 		//Wait until we give permission to make the move (via keyboard input)
+		/*
 		try {
 			while ( ch != -1 ) {				
 				// read character from keyboard
@@ -80,6 +90,14 @@ public class Agent {
 			}
 		} catch (IOException e) {
 			System.out.println ("IO error:" + e );
+		}
+		*/
+		
+		// delay
+		try {
+			TimeUnit.MILLISECONDS.sleep(500);
+		} catch (InterruptedException e) {
+			System.out.println("Interrupt Exception" + e);
 		}
 		
 		//Print the move out for inspection
@@ -162,7 +180,7 @@ public class Agent {
 			System.exit(-1);
 		}
 
-		try { // scan 5-by-5 wintow around current location
+		try { // scan 5-by-5 window around current location
 			while( true ) {
 				for( i=0; i < 5; i++ ) {
 					for( j=0; j < 5; j++ ) {
@@ -198,7 +216,7 @@ public class Agent {
 	 */
 	Strategy decideStrategy(Map map){
 		//Adds all the nodes that are heuristics to the seen heuristics 
-		scanForHeuristics(map);	
+		//scanForHeuristics(map);	
 		
 		//Placeholder code to demonstrate how this function works. Will change rapidly.
 		if(heuristicsSeen.isEmpty()){

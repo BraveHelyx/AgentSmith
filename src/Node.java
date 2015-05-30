@@ -69,6 +69,20 @@ public class Node implements Comparable<Node> {
 		return false;
 	}
 	
+	public boolean isObstacle() {
+		if(item == '*' || item == '~' || item == 'T') {
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isMapEdge() {
+		if(item == '.') {
+			return true;
+		}
+		return false;
+	}
+	
 	public void updateH(int cost) {
 		h += cost;
 	}
