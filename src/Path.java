@@ -7,16 +7,18 @@ import java.util.ArrayList;
  * @author Bruce Hely
  *
  */
-public class Path {
+public class Path implements Comparable<Path>{
 	private ArrayList<Node> currentPath = new ArrayList<Node>();
 	Node currentNode;
 	private int numNodes;
 	private int numRotations;
 	private Inventory availableTools;
 	private int currDirection;
+	private boolean onBoat;
 	
 	//	g(x) value
 	private int pathValue;
+	private int priorityValue;
 	
 	/**
 	 * Constructor used for creating initial paths from an origin
@@ -33,6 +35,7 @@ public class Path {
 		
 		currDirection = direction;
 		availableTools = playerInventory.clone();
+		onBoat = false;
 		
 		numNodes = 1;
 		numRotations = 0;
@@ -44,7 +47,7 @@ public class Path {
 	 * Constructor used for cloning new paths from old ones
 	 * 
 	 */
-	public Path(ArrayList<Node> _currentPath, Node _currentNode, int _numNodes, int _numRotations, int _currDirection){
+	public Path(ArrayList<Node> _currentPath, Node _currentNode, int _numNodes, int _numRotations, int _currDirection, boolean _onBoat){
 		for(Node n : _currentPath){
 			currentPath.add(n);
 		} 
@@ -53,6 +56,7 @@ public class Path {
 		numNodes = _numNodes;
 		numRotations = _numRotations;
 		currDirection = _currDirection;
+		onBoat = _onBoat;
 	}
 	
 	public ArrayList<Node> getCurrentPath(){
@@ -65,6 +69,23 @@ public class Path {
 	 */
 	private void updatePathValue(){
 		pathValue = (numNodes-1) + numRotations;
+	}
+	
+	
+	/**
+	 * Method that updates this path's priority value calculated as
+	 * f(x) = g(x) + h(x)
+	 * 
+	 * Where g(x) is the movement costs including rotations of the path taken so far
+	 * and h(x) is the heuristic value of the current node added to the path 
+	 * @param heuristicValue
+	 */
+	private void updatePriorityValue(int heuristicValue){
+		priorityValue = pathValue + heuristicValue;
+	}
+	
+	public int getPriorityValue(){
+		return priorityValue;
 	}
 	
 	/**
@@ -96,16 +117,47 @@ public class Path {
 		currentPath.add(newNode);
 		numNodes++;
 		
-		//Update this path's g(x) cost.
+		//Update this path's g(x) cost and f(x) cost.
 		updatePathValue();
+		updatePriorityValue(newNode.getH());
+	}
+	
+	public Inventory getInventory(){
+		return availableTools;
 	}
 	
 	public Node getCurrentNode(){
 		return currentNode;
 	}
 	
+	public boolean isInBoat(){
+		return onBoat;
+	}
+	
+	public void toggleBoat(){
+		onBoat = onBoat ? false : true;
+	}
 	@Override
 	public Path clone(){
-		return new Path(currentPath, currentNode, numNodes, numRotations, currDirection);
+		return new Path(currentPath, currentNode, numNodes, numRotations, currDirection, onBoat);
+	}
+
+
+	@Override
+	public int compareTo(Path o) {
+		final int LESSER = -1;
+		final int EQUAL = 0;
+		final int GREATER = 1;
+		
+		int classifier;
+		
+		if(o.equals(this)){
+			classifier =  EQUAL;
+		} else if(this.getPriorityValue() < o.getPriorityValue()){
+			classifier = LESSER;
+		} else {
+			classifier = GREATER;
+		}
+		return classifier;
 	}
 }
