@@ -48,6 +48,18 @@ public class Map {
 		return itemMap;
 	}
 	
+	public int getPosX() {
+		return posX;
+	}
+	
+	public int getPosY() {
+		return posY;
+	}
+	
+	public int getFacing() {
+		return facing;
+	}
+	
 	/*
 	 * Method that processes the very first view.
 	 */
