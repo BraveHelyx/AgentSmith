@@ -19,6 +19,11 @@ public class Compass {
 	private BountyPoint agentPos;
 	private int agentDir;
 	
+	public final static int NORTH = 0;
+	public final static int EAST = 1;
+	public final static int SOUTH = 2;
+	public final static int WEST = 3;
+	
 	// Constructor for new maps
 	public Compass(){
 		agentPos = new BountyPoint(40, 40);

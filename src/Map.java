@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 
 /*
  * Written by James Virtue, modified by Bruce Hely, 2015
@@ -16,6 +18,7 @@ public class Map {
 	
 	private Node itemMap[][];
 	public static int MAXEDGE = 80;
+	private Node currentGoal;
 	private int posX;
 	private int posY;
 	private int facing;
@@ -132,6 +135,40 @@ public class Map {
 				break;
 			}
 		}
+	}
+	
+	public Node getAgentNode(){
+		return itemMap[posX][posY];
+	}
+	public int getAgentX(){
+		return posX;
+	}
+	
+	public int getAgentY(){
+		return posY;
+	}
+	
+	
+	/**
+	 * Method that returns a list containing all the adjacent nodes
+	 * 
+	 * @param currNode			The node from which we are to obtain the adjacent nodes from.
+	 * @return					A list of adjacent nodes.
+	 */
+	public ArrayList<Node> getAdjacentNodes(Node currNode){
+		ArrayList<Node> adjacentNodes = new ArrayList<Node>();
+		int x = currNode.getX();
+		int y = currNode.getY();
+		adjacentNodes.add(itemMap[x][y-1]);
+		adjacentNodes.add(itemMap[x+1][y]);
+		adjacentNodes.add(itemMap[x][y+1]);
+		adjacentNodes.add(itemMap[x-1][y]);
+		
+		return adjacentNodes;
+	}
+	
+	public int getDirection(){
+		return facing;
 	}
 	
 	public void printMap() {
