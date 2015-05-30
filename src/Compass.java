@@ -18,10 +18,10 @@
 public class Compass {
 	private BountyPoint agentPos;
 	private int agentDir;
-	public static int NORTH = 0;
-	public static int EAST = 1;
-	public static int SOUTH = 2;
-	public static int WEST = 3;
+	public final static int NORTH = 0;
+	public final static int EAST = 1;
+	public final static int SOUTH = 2;
+	public final static int WEST = 3;
 	
 	// Constructor for new maps
 	public Compass(){

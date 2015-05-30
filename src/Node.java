@@ -100,4 +100,14 @@ public class Node implements Comparable<Node> {
 	public Node clone(){
 		return new Node(x, y, item, h, g);
 	}
+	
+	@Override
+	public boolean equals(Object other){
+		boolean result = false;
+		if(other instanceof Node){
+			Node target = (Node)other;
+			result = (this.getX() == target.getX() && this.getY() == target.getY() && this.getItem() == target.getItem());
+		}
+		return result;
+	}
 }

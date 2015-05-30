@@ -23,6 +23,19 @@ public class Agent {
 	//Create a list of moves (in a queue) to follow until completion
 	Queue<Character> moveList = new LinkedList<Character>();
 	
+	//Variables for inventory locations 
+	boolean foundGold = false;
+	Node goldNode = null;
+	boolean foundAxe = false;
+	Node axeNode = null;
+	boolean foundBoat = false;
+	Node boatNode = null;
+	
+	//variables for keeping
+	
+	//List of nodes that contain dynamite
+	ArrayList<Node> dynamite = new ArrayList<Node>();
+	
 	ArrayList<Node> heuristicsSeen = new ArrayList<Node>();
 	ArrayList<Node> heuristicsObtainable = new ArrayList<Node>();
 	ArrayList<Node> heuristicsUnobtainable = new ArrayList<Node>();
@@ -38,8 +51,6 @@ public class Agent {
 		//
 		char returnedMove;
 		String nextMoves;
-		
-//		System.out.print("Enter Action(s): ");
 
 		//If no moves to process
 		if(moveList.isEmpty()){
@@ -56,6 +67,7 @@ public class Agent {
 			}
 		}
 
+		//Pop a value off the moveList
 		returnedMove = moveList.poll();
 		
 		char inFront = view[1][2]; // character directly in front of agent
@@ -214,6 +226,26 @@ public class Agent {
 		}
 	}
 	
+	/**
+	 * Method to categorize and sort the nodes into respectable fields that we can process
+	 * 
+	 * @param node		Node to be evaluated and categorized
+	 */
+	public void categorizeNode(Node node){
+		//If a node turns out to be a gold node
+		if(node.getItem() == 'g'){
+			foundGold = true;
+			goldNode = node.clone();
+		} else if (node.getItem() == 'a'){
+			foundAxe = true;
+			axeNode = node.clone();
+		} else if (node.getItem() == 'd'){
+			dynamite.add(node.clone());
+		} else if (node.getItem() == 'B'){
+			foundBoat = true;
+			boatNode = node.clone();
+		}
+	}
 	/**
 	 * Method that scans a map and adds all nodes that are heuristics to the 
 	 * list of seen heuristics.
