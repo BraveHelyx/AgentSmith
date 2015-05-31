@@ -10,7 +10,6 @@ import java.util.concurrent.TimeUnit;
 import java.io.*;
 import java.net.*;
 
-import com.sun.jmx.remote.internal.ArrayQueue;
 
 public class Agent {
 
@@ -65,14 +64,6 @@ public class Agent {
 
 		//Pop a value off the moveList
 		returnedMove = moveList.poll();
-		
-//		char inFront = view[1][2]; // character directly in front of agent
-//    	if(inFront == 'T' || inFront == '*' || inFront == '.') {
-//    		if(returnedMove == 'F' || returnedMove == 'f') {
-//    			returnedMove = 'R';
-//    			System.out.println("Agent just tried to move forward. He was redirected.");
-//    		}
-//    	}
 		
 		//Update the local assets with the new move
 		updateLocalAssets(returnedMove);
@@ -228,8 +219,8 @@ public class Agent {
 			DiscoverableNode targetNode = heuristicsObtainable.poll();
 			returnedMoves = targetNode.getPathToNode();
 		} else {
-			
-			//DO explore strategy here...
+			Strategy explore = new ExploreStrategy();
+			returnedMoves = explore.decideMove(map, inventory, compass);
 		}
 		
 		
