@@ -10,7 +10,6 @@ import java.util.concurrent.TimeUnit;
 import java.io.*;
 import java.net.*;
 
-import com.sun.jmx.remote.internal.ArrayQueue;
 
 public class Agent {
 
@@ -31,38 +30,34 @@ public class Agent {
 	boolean foundBoat = false;
 	Node boatNode = null;
 	
-	//variables for keeping
-	
 	//List of nodes that contain dynamite
 	ArrayList<Node> dynamite = new ArrayList<Node>();
 	
 	ArrayList<Node> heuristicsSeen = new ArrayList<Node>();
-	ArrayList<Node> heuristicsObtainable = new ArrayList<Node>();
 	ArrayList<Node> heuristicsUnobtainable = new ArrayList<Node>();
+	PriorityQueue<DiscoverableNode> heuristicsObtainable = new PriorityQueue<DiscoverableNode>();
 	
 	public char get_action( char view[][] ) {
 		
 		//Update the local copy of the map with the new view
 		map.update(view, compass);
 		map.printMap();
-
-		int ch=0;
 		
-		//
 		char returnedMove;
-		String nextMoves;
-
+		ArrayList<Node> nextMoves;
+		String nextCommands;
+		
 		//If no moves to process
 		if(moveList.isEmpty()){
 			
 			//Obtain a strategy to proceed with
-			Strategy chosenStrategy = decideStrategy(map);
+			nextMoves = decideStrategy(map);
 			
-			//Retrieve a string (single or many characters which decides what to do)
-			nextMoves = chosenStrategy.decideMove(map, inventory, compass);
-			
+			//Make move generator
+			MoveGenerator m = new MoveGenerator(nextMoves, compass);
+			nextCommands = m.getMoves();
 			//Add all the characters individually to the moveList
-			for(char c : nextMoves.toCharArray()){
+			for(char c : nextCommands.toCharArray()){
 				moveList.add(c);
 			}
 		}
@@ -70,33 +65,12 @@ public class Agent {
 		//Pop a value off the moveList
 		returnedMove = moveList.poll();
 		
-		//Fail-safe against illegal moves
-		char inFront = view[1][2]; // character directly in front of agent
-    	if(inFront == 'T' || inFront == '*' || inFront == '.') {
-    		if(returnedMove == 'F' || returnedMove == 'f') {
-    			returnedMove = 'R';
-    			System.out.println("Agent just tried to move forward. He was redirected.");
-    		}
-    	}
-		
 		//Update the local assets with the new move
 		updateLocalAssets(returnedMove);
 		
-		//Wait until we give permission to make the move (via keyboard input)
-		/*
-		try {
-			while ( ch != -1 ) {				
-				// read character from keyboard
-	            ch  = System.in.read();
-			}
-		} catch (IOException e) {
-			System.out.println ("IO error:" + e );
-		}
-		*/
-		
 		// delay
 		try {
-			TimeUnit.MILLISECONDS.sleep(500);
+			TimeUnit.MILLISECONDS.sleep(1500);
 		} catch (InterruptedException e) {
 			System.out.println("Interrupt Exception" + e);
 		}
@@ -215,16 +189,61 @@ public class Agent {
 	 * 
 	 * @param map		The current map object to scan.
 	 */
-	Strategy decideStrategy(Map map){
-		//Adds all the nodes that are heuristics to the seen heuristics 
-		//scanForHeuristics(map);	
+	ArrayList<Node> decideStrategy(Map map){
 		
-		//Placeholder code to demonstrate how this function works. Will change rapidly.
-		if(heuristicsSeen.isEmpty()){
-			return new ExploreStrategy();
-		} else {
-			return new RunStrategy();
+		ArrayList<Node> searchResults = null;
+
+		ArrayList<Node> returnedMoves = null;
+		
+		//Adds all the nodes that are heuristics to the seen heuristics 
+		scanForHeuristics(map);	
+		
+		//For every node in heuristicsSeen, can we obtain it? Classify everything
+		if(!heuristicsSeen.isEmpty()){
+			for(Node n : heuristicsSeen){
+				Search newSearch = new Search(map, inventory, n);		//Create a new search for the node
+				searchResults = newSearch.findPath();
+				
+				//Check if we got a path
+				if(!searchResults.isEmpty()){
+					heuristicsObtainable.add(new DiscoverableNode(n, searchResults));	//If so, add to obtainables
+				} else {
+					heuristicsUnobtainable.add(n);	//If not, add to unobtainable
+				}		
+			}
 		}
+		
+		//We have classified all heuristics
+		heuristicsSeen.clear();
+		
+		//Get moves to heuristic if obtainable ones exist
+		if(!heuristicsObtainable.isEmpty()){
+			System.out.println("GET SHINY!!");
+			DiscoverableNode targetNode = heuristicsObtainable.poll();
+			returnedMoves = targetNode.getPathToNode();
+			
+			//Preupdate the value fields as if we have already obtainedthe item
+			if(targetNode.getItem() == 'g'){
+				inventory.obtainedGold();
+				targetNode.setItem(' ');
+			} else if (targetNode.getItem() == 'a'){
+				inventory.obtainedAxe();
+				targetNode.setItem(' ');
+			} else if (targetNode.getItem() == 'B'){
+				inventory.toggleBoat();
+			} else if (targetNode.getItem() == 'd'){
+				inventory.obtainedDynamite();
+			}
+
+		} else {
+			System.out.println("EXPLORE!!");
+			Strategy explore = new ExploreStrategy();
+			returnedMoves = explore.decideMove(map, inventory, compass);
+		}
+		
+		
+		return returnedMoves;
+
 	}
 	
 	/**
