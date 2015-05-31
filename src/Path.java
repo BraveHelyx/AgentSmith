@@ -48,15 +48,16 @@ public class Path implements Comparable<Path>{
 	 * Constructor used for cloning new paths from old ones
 	 * 
 	 */
-	public Path(ArrayList<Node> _currentPath, Node _currentNode, int _numNodes, int _numRotations, int _currDirection, boolean _onBoat){
+	private Path(ArrayList<Node> _currentPath, Node _currentNode, Inventory pathInventory, int _numRotations, int _currDirection, boolean _onBoat){
 		for(Node n : _currentPath){
 			currentPath.add(n);
 		} 
 		
 		currentNode = _currentNode;
-		numNodes = _numNodes;
+		numNodes = _currentPath.size();
 		numRotations = _numRotations;
 		currDirection = _currDirection;
+		availableTools = pathInventory.clone();
 		onBoat = _onBoat;
 	}
 	
@@ -108,14 +109,29 @@ public class Path implements Comparable<Path>{
 			if(currDirection == Compass.WEST || currDirection == Compass.EAST){
 				numRotations++;
 			} 
+			
+			if(nextY < currY){		//Going north
+				currDirection = Compass.NORTH;
+			} else {
+				currDirection = Compass.SOUTH;
+			}	
 		} else {					//If we have moved Horizontally, then the X Values are different
 			if(currDirection == Compass.NORTH || currDirection == Compass.SOUTH){
 				numRotations++;
 			} 
+			
+			if(nextX < currX){		//Going West
+				currDirection = Compass.WEST;
+			} else {
+				currDirection = Compass.EAST;
+			}
+
 		}
 		
 		//Add the node to path, and update the current number of nodes in the path
 		currentPath.add(newNode);
+		currentNode = newNode;
+		
 		numNodes++;
 		
 		//Update this path's g(x) cost and f(x) cost.
@@ -140,9 +156,8 @@ public class Path implements Comparable<Path>{
 	}
 	@Override
 	public Path clone(){
-		return new Path(currentPath, currentNode, numNodes, numRotations, currDirection, onBoat);
+		return new Path(currentPath, currentNode, availableTools, numRotations, currDirection, onBoat);
 	}
-
 
 	@Override
 	public int compareTo(Path o) {
@@ -152,7 +167,7 @@ public class Path implements Comparable<Path>{
 		
 		int classifier;
 		
-		if(o.equals(this)){
+		if(this.getPriorityValue() == o.getPriorityValue()){
 			classifier =  EQUAL;
 		} else if(this.getPriorityValue() < o.getPriorityValue()){
 			classifier = LESSER;

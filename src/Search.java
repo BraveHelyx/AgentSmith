@@ -78,6 +78,7 @@ public class Search {
 				returnedPath = currPath.getCurrentPath();
 			} 
 				
+			//If processing a node that is not the objective goal
 			if(!found){
 				//For each of the nodes
 				adjacentNodes = map.getAdjacentNodes(currNode);
@@ -89,8 +90,13 @@ public class Search {
 						Inventory pathInventory = currPath.getInventory();
 						
 						
-						if(currPath.isInBoat() && n.getItem() == ' '){	//If on boat and go onto land, toggle boat		
-							currPath.toggleBoat();
+						if(n.getItem() == ' '){							//If we encounter a blank tile		
+							//If we're on a boat
+							if(currPath.isInBoat()){
+								//never thought you'd be here did you.
+								currPath.toggleBoat();
+							}
+							
 							newPath = currPath.clone();
 							newPath.addToPath(n);
 							
@@ -130,14 +136,24 @@ public class Search {
 									pathsToVisit.add(newPath);
 								}
 							}
-						} else if(n.getItem() == 'B'){					//If item expanded is a boat
-							newPath = currPath.clone();
-							newPath.addToPath(n);
-							newPath.toggleBoat();
+						} else if(n.isHeuristic()){						//If we encounter a heuristic
+							if(n.getItem() == 'a'){						//If we found axe
+								newPath = currPath.clone();
+								pathInventory.obtainedAxe();
+							} else if(n.getItem() == 'd'){				//If we found dynamite
+								newPath = currPath.clone();
+								pathInventory.obtainedDynamite();		
+							} else if(n.getItem() == 'B'){				//If we found Boat
+								newPath = currPath.clone();
+								newPath.toggleBoat();
+								pathInventory.toggleBoat();
+							} else {									//If we found Gold (Non decisive. Expands as basic node)
+								newPath = currPath.clone();
+							}
 							
-							//Add to the frontier
-							pathsToVisit.add(newPath);
-						}
+							newPath.addToPath(n);
+							pathsToVisit.add(newPath);				
+						} 
 					}
 				}	
 			}	
