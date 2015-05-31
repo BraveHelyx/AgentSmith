@@ -38,6 +38,8 @@ public class Explore {
 			if(currNode.getItem() == '`'){
 				found = true;		
 				returnedPath = currPath.getCurrentPath();
+				int size = returnedPath.size();
+				returnedPath.remove(size-1);
 			}
 				
 			if(!found){

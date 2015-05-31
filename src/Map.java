@@ -167,7 +167,7 @@ public class Map {
 				if((i == 2) && (j == 2)){
 					itemMap[y][x].setItem('^');			// put the agent icon in the middle
 				} else {
-					itemMap[y][x].setItem(view[i][j]);	// view provides row, col. -> change to col, row for x, y.
+					itemMap[y][x].setItem(view[i][j]);	// view provides row, col.
 				}
 			}
 		}
@@ -196,9 +196,9 @@ public class Map {
 					itemMap[y][x].setItem(view[0][i]);
 				}
 				
-				itemMap[posY][posX-1].setItem(view[1][2]);	// update directly in front
+				itemMap[posY-1][posX].setItem(view[1][2]);	// update directly in front
 				itemMap[posY][posX].setItem('^');			// set agent position
-				itemMap[posY][posX+1].setItem(view[3][2]);	// update directly behind
+				itemMap[posY+1][posX].setItem(view[3][2]);	// update directly behind
 				break;
 				
 			case 1:		// EAST
@@ -208,9 +208,9 @@ public class Map {
 					itemMap[y][x].setItem(view[0][j]);
 				}
 				
-				itemMap[posY+1][posX].setItem(view[1][2]);	// update directly in front
+				itemMap[posY][posX+1].setItem(view[1][2]);	// update directly in front
 				itemMap[posY][posX].setItem('>');			// set agent position
-				itemMap[posY-1][posX].setItem(view[3][2]);	// update directly behind
+				itemMap[posY][posX-1].setItem(view[3][2]);	// update directly behind
 				break;
 				
 			case 2:		// SOUTH
@@ -220,9 +220,9 @@ public class Map {
 					itemMap[y][x].setItem(view[0][i]);
 				}
 				
-				itemMap[posY][posX+1].setItem(view[1][2]);	// update directly in front
+				itemMap[posY+1][posX].setItem(view[1][2]);	// update directly in front
 				itemMap[posY][posX].setItem('v');			// set agent position
-				itemMap[posY][posX-1].setItem(view[3][2]);	// update directly behind
+				itemMap[posY-1][posX].setItem(view[3][2]);	// update directly behind
 				break;
 			
 			case 3:		// WEST
@@ -232,9 +232,9 @@ public class Map {
 					itemMap[y][x].setItem(view[0][j]);
 				}
 				
-				itemMap[posY-1][posX].setItem(view[1][2]);	// update directly in front
+				itemMap[posY][posX-1].setItem(view[1][2]);	// update directly in front
 				itemMap[posY][posX].setItem('<');			// set agent position
-				itemMap[posY+1][posX].setItem(view[3][2]);	// update directly behind
+				itemMap[posY][posX+1].setItem(view[3][2]);	// update directly behind
 				break;
 			}
 		}
