@@ -105,23 +105,45 @@ public class Path implements Comparable<Path>{
 		//Handles addition of rotations
 		//Note that we will never have to increment rotations by 2, because backtracking is not allowed.
 		if(currX == nextX){			//If we have moved Vertically, then the X Values are the same
-			if(currDirection == Compass.WEST || currDirection == Compass.EAST){
-				numRotations++;
-			} 
-			
 			if(nextY < currY){		//Going north
+				if(currDirection != Compass.NORTH){
+					if(currDirection == Compass.WEST || currDirection == Compass.EAST){
+						numRotations++;
+					} else {
+						numRotations+=2;
+					}
+				}
 				currDirection = Compass.NORTH;
 			} else {
+				if(currDirection != Compass.SOUTH){
+					if(currDirection == Compass.WEST || currDirection == Compass.EAST){
+						numRotations++;
+					} else {
+						numRotations+=2;
+					}
+				}
 				currDirection = Compass.SOUTH;
 			}	
 		} else {					//If we have moved Horizontally, then the X Values are different
-			if(currDirection == Compass.NORTH || currDirection == Compass.SOUTH){
-				numRotations++;
-			} 
+
 			
 			if(nextX < currX){		//Going West
+				if(currDirection != Compass.WEST){
+					if(currDirection == Compass.NORTH || currDirection == Compass.SOUTH){
+						numRotations++;
+					} else {
+						numRotations+=2;
+					}
+				}
 				currDirection = Compass.WEST;
 			} else {
+				if(currDirection != Compass.EAST){
+					if(currDirection == Compass.NORTH || currDirection == Compass.SOUTH){
+						numRotations++;
+					} else {
+						numRotations+=2;
+					}
+				}
 				currDirection = Compass.EAST;
 			}
 
