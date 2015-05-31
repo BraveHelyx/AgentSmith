@@ -59,7 +59,7 @@ public class Agent {
 			Strategy chosenStrategy = decideStrategy(map);
 			
 			//Retrieve a string (single or many characters which decides what to do)
-			nextMoves = chosenStrategy.decideMove(map);
+			nextMoves = chosenStrategy.decideMove(map, inventory, compass);
 			
 			//Add all the characters individually to the moveList
 			for(char c : nextMoves.toCharArray()){

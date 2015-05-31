@@ -4,32 +4,39 @@
  */
 public class Node{
 	
-	private int x;
-	private int y;
+	private BountyPoint point;
 	private char item;
 	private int h;
 	
 	public Node() {
-		x = 0;
-		y = 0;
+		point = new BountyPoint(0,0);
 		item = ' ';
 		h = 0;
 	}
 	
 	public Node(int x_, int y_, char item_, int h_) {
-		x = x_;
-		y = y_;
+		point = new BountyPoint(x_, y_);
 		item = item_;
 		h = h_;
 
 	}
 	
+	public Node(BountyPoint point_, char item_, int h_) {
+		point = point_;
+		item = item_;
+		h = h_;
+	}
+	
 	public int getX() {
-		return x;
+		return point.getX();
 	}
 	
 	public int getY() {
-		return y;
+		return point.getY();
+	}
+	
+	public BountyPoint getPoint() {
+		return point;
 	}
 	
 	public char getItem() {
@@ -44,11 +51,11 @@ public class Node{
 	}
 	
 	public void setX(int x_) {
-		x = x_;
+		point.setX(x_);;
 	}
 	
 	public void setY(int y_) {
-		y = y_;
+		point.setY(y_);;
 	}
 	
 	public void setItem(char item_) {
@@ -82,7 +89,7 @@ public class Node{
 	
 	@Override
 	public Node clone(){
-		return new Node(x, y, item, h);
+		return new Node(point, item, h);
 	}
 	
 	@Override

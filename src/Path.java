@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class Path implements Comparable<Path>{
 	
 	private ArrayList<Node> currentPath = new ArrayList<Node>();
-	Node currentNode;
+	private Node currentNode;
 	private int numNodes;
 	private int numRotations;
 	private Inventory availableTools;
@@ -97,14 +97,13 @@ public class Path implements Comparable<Path>{
 	 * @precondition	newNode must be a node that is vertically or horizontally adjacent to currentNode in 2D Geometry.
 	 */
 	public void addToPath(Node newNode){
-		int currX = currentNode.getX();
+		int currX = currentNode.getX();		
 		int currY = currentNode.getY();
-		
 		int nextX = newNode.getX();
 		int nextY = newNode.getY();
 		
 		//Handles addition of rotations
-		//Note that we will never have to incremement rotations by 2, because backtracking is not allowed.
+		//Note that we will never have to increment rotations by 2, because backtracking is not allowed.
 		if(currX == nextX){			//If we have moved Vertically, then the X Values are the same
 			if(currDirection == Compass.WEST || currDirection == Compass.EAST){
 				numRotations++;
@@ -131,7 +130,6 @@ public class Path implements Comparable<Path>{
 		//Add the node to path, and update the current number of nodes in the path
 		currentPath.add(newNode);
 		currentNode = newNode;
-		
 		numNodes++;
 		
 		//Update this path's g(x) cost and f(x) cost.
@@ -154,6 +152,7 @@ public class Path implements Comparable<Path>{
 	public void toggleBoat(){
 		onBoat = onBoat ? false : true;
 	}
+	
 	@Override
 	public Path clone(){
 		return new Path(currentPath, currentNode, availableTools, numRotations, currDirection, onBoat);
