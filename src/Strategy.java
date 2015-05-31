@@ -1,6 +1,8 @@
+import java.util.ArrayList;
+
 /*
  * Strategy interface
  */
 public interface Strategy {
-	public String decideMove(Map map, Inventory inventory, Compass compass);
+	public ArrayList<Node> decideMove(Map map, Inventory inventory, Compass compass);
 }

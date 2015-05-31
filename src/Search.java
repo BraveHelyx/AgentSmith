@@ -51,7 +51,7 @@ public class Search {
 		
 		Node currNode;
 		ArrayList<Node> adjacentNodes;
-		ArrayList<Node> returnedPath = null;
+		ArrayList<Node> returnedPath = new ArrayList<Node>();
 		Path newPath;
 		
 		//Flag if we have found the objective node
