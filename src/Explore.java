@@ -74,7 +74,7 @@ public class Explore {
 								
 							} else if(n.getItem() == '*'){				//If we encounter a wall and we have dynamite, add to frontier
 								
-								if(pathInventory.containsDynamite()){	
+								if(pathInventory.containsDynamite() && pathInventory.getNumDynamite() > 1){	
 									//Use dynamite to expand and then clone
 									pathInventory.useDynamite();
 									newPath = currPath.clone();			

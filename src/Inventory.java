@@ -91,6 +91,11 @@ public class Inventory{
 	public Inventory clone(){
 		return new Inventory(axe, gold, numDynamite);
 	}
+	
+	@Override
+	public String toString(){
+		return "[a:" + axe + "][g:" + gold +"][d:" + numDynamite + "]";
+	}
 }
 
 
