@@ -42,6 +42,9 @@ public class Node implements Comparable<Node> {
 		return item;
 	}
 	
+	public void setH(int newH) {
+		h = newH;
+	}
 	public int getH() {
 		return h;
 	}
