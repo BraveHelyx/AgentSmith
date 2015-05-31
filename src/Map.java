@@ -59,7 +59,7 @@ public class Map {
 		//Initialise the map with nodes containing undiscovered symbols
 		for(int i = 0; i < maxEdge; i++) {
 			for(int j = 0; j < maxEdge; j++) {
-				itemMap[j][i] = new Node(j, i, '`', 0);
+				itemMap[i][j] = new Node(j, i, '`', 0);
 			}
 		}
 	}
@@ -160,14 +160,14 @@ public class Map {
 	private void initUpdate(char[][] view) {
 		int x, y;
 
-		for(int j = 0; j < 5; j++) {
-			y = posY- 2 + j;
-			for(int i = 0; i < 5; i++) {
-				x = posX - 2 + i;
+		for(int i = 0; i < 5; i++) {
+			y = posY- 2 + i;
+			for(int j = 0; j < 5; j++) {
+				x = posX - 2 + j;
 				if((i == 2) && (j == 2)){
-					itemMap[x][y].setItem('^');			// put the agent icon in the middle
+					itemMap[y][x].setItem('^');			// put the agent icon in the middle
 				} else {
-					itemMap[x][y].setItem(view[j][i]);	// view provides row, col. -> change to col, row for x, y.
+					itemMap[y][x].setItem(view[i][j]);	// view provides row, col. -> change to col, row for x, y.
 				}
 			}
 		}
@@ -193,48 +193,48 @@ public class Map {
 				for(int i = 0; i < 5; i++) {
 					x = posX - 2 + i;
 					y = posY - 2;
-					itemMap[x][y].setItem(view[0][i]);
+					itemMap[y][x].setItem(view[0][i]);
 				}
 				
-				itemMap[posX][posY-1].setItem(view[1][2]);	// update directly in front
-				itemMap[posX][posY].setItem('^');			// set agent position
-				itemMap[posX][posY+1].setItem(view[3][2]);	// update directly behind
+				itemMap[posY][posX-1].setItem(view[1][2]);	// update directly in front
+				itemMap[posY][posX].setItem('^');			// set agent position
+				itemMap[posY][posX+1].setItem(view[3][2]);	// update directly behind
 				break;
 				
 			case 1:		// EAST
 				for(int j = 0; j < 5; j++) {
 					x = posX + 2;
 					y = posY - 2 + j;
-					itemMap[x][y].setItem(view[0][j]);
+					itemMap[y][x].setItem(view[0][j]);
 				}
 				
-				itemMap[posX+1][posY].setItem(view[1][2]);	// update directly in front
-				itemMap[posX][posY].setItem('>');			// set agent position
-				itemMap[posX-1][posY].setItem(view[3][2]);	// update directly behind
+				itemMap[posY+1][posX].setItem(view[1][2]);	// update directly in front
+				itemMap[posY][posX].setItem('>');			// set agent position
+				itemMap[posY-1][posX].setItem(view[3][2]);	// update directly behind
 				break;
 				
 			case 2:		// SOUTH
 				for(int i = 0; i < 5; i++) {
 					x = posX + 2 - i;
 					y = posY + 2;
-					itemMap[x][y].setItem(view[0][i]);
+					itemMap[y][x].setItem(view[0][i]);
 				}
 				
-				itemMap[posX][posY+1].setItem(view[1][2]);	// update directly in front
-				itemMap[posX][posY].setItem('v');			// set agent position
-				itemMap[posX][posY-1].setItem(view[3][2]);	// update directly behind
+				itemMap[posY][posX+1].setItem(view[1][2]);	// update directly in front
+				itemMap[posY][posX].setItem('v');			// set agent position
+				itemMap[posY][posX-1].setItem(view[3][2]);	// update directly behind
 				break;
 			
 			case 3:		// WEST
 				for(int j = 0; j < 5; j++) {
 					x = posX - 2;
 					y = posY + 2 - j;
-					itemMap[x][y].setItem(view[0][j]);
+					itemMap[y][x].setItem(view[0][j]);
 				}
 				
-				itemMap[posX-1][posY].setItem(view[1][2]);	// update directly in front
-				itemMap[posX][posY].setItem('<');			// set agent position
-				itemMap[posX+1][posY].setItem(view[3][2]);	// update directly behind
+				itemMap[posY-1][posX].setItem(view[1][2]);	// update directly in front
+				itemMap[posY][posX].setItem('<');			// set agent position
+				itemMap[posY+1][posX].setItem(view[3][2]);	// update directly behind
 				break;
 			}
 		}
@@ -277,14 +277,23 @@ public class Map {
 	public int getMaxEdge(){
 		return maxEdge;
 	}
-	   
+	
 	public void printMap() {
+		for(int i = 0; i < maxEdge; i++) {
+			for(int j = 0; j < maxEdge; j++) {
+				System.out.print(itemMap[i][j].getItem());
+			}
+			System.out.print('\n');
+		}
+	}
+	   
+	public void printTestMap() {
 		char currItem;
-		for(int j = 0; j < maxEdge; j++) {
-			for(int i = 0; i < maxEdge; i++) {
-				currItem = itemMap[j][i].getItem();
+		for(int i = 0; i < maxEdge; i++) {
+			for(int j = 0; j < maxEdge; j++) {
+				currItem = itemMap[i][j].getItem();
 				if(currItem != '.'){
-					System.out.print(itemMap[j][i].getItem());
+					System.out.print(itemMap[i][j].getItem());
 				}
 			}
 			System.out.print('\n');

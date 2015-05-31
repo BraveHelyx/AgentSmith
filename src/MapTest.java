@@ -12,6 +12,7 @@ public class MapTest {
 		assertEquals(testMap.getAgentY(), 4);
 		assertEquals(testMap.getAgentNode().getItem(), 'v');
 		assertEquals(testMap.getDirection(), Compass.SOUTH);
+		testMap.printTestMap();
 	}
 
 }
