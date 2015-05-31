@@ -5,11 +5,47 @@ import java.util.PriorityQueue;
 public class Explore {
 	
 	private Map map;
+	private Node[][] itemMap;
 	private Inventory inventory;
 	
 	public Explore(Map map_, Inventory inventory_) {
 		map = map_;
+		itemMap = map.getMap();
 		inventory = inventory_;
+	}
+	
+	public boolean willExlplore(Node node) {
+		int x = node.getX();
+		int y = node.getY();
+		// North border of agent
+		for(int i = 0; i < 3; i++){
+			int newX = x - 1 + i;
+			if(itemMap[y-2][newX].getItem() == '`'){
+				return true;
+			}
+		}
+		// East border of agent
+		for(int i = 0; i < 3; i++){
+			int newY = y - 1 + i;
+			if(itemMap[newY][x+2].getItem() == '`'){
+				return true;
+			}
+		}
+		// West border of agent
+		for(int i = 2; i >= 0; i--){
+			int newY = y + 1 - i;
+			if(itemMap[newY][x-2].getItem() == '`'){
+				return true;
+			}
+		}
+		// South border of agent
+		for(int i = 2; i >= 0; i--){
+			int newX = x + 1 - i;
+			if(itemMap[y+2][newX].getItem() == '`'){
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public ArrayList<Node> findPath(){
@@ -34,8 +70,10 @@ public class Explore {
 			currPath = pathsToVisit.poll();	//Pop off frontier
 			currNode = currPath.getCurrentNode();
 			
+			boolean willExplore = this.willExlplore(currNode);
+			
 			//Check if we have found a path to the goal
-			if(map.willExplore(currNode)){
+			if(willExplore){
 				found = true;		
 				returnedPath = currPath.getCurrentPath();
 			}
@@ -73,8 +111,9 @@ public class Explore {
 								}
 								
 							} else if(n.getItem() == '*'){				//If we encounter a wall and we have dynamite, add to frontier
-								
-								if(pathInventory.containsDynamite() && pathInventory.getNumDynamite() > 1){	
+
+
+								if(pathInventory.getNumDynamite() > 1){	
 									//Use dynamite to expand and then clone
 									pathInventory.useDynamite();
 									newPath = currPath.clone();			
@@ -100,7 +139,7 @@ public class Explore {
 							
 							//Add to the frontier
 							pathsToVisit.add(newPath);
-						} else if(n.getItem() == '`') {
+						} else {
 							newPath = currPath.clone();
 							newPath.addToPath(n);
 							

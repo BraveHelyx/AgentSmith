@@ -134,6 +134,12 @@ public class Map {
 		return itemMap;
 	}
 	
+	public Node getNode(BountyPoint point){
+		int x = point.getX();
+		int y = point.getY();
+		return itemMap[y][x];
+	}
+	
 	public int getPosX() {
 		return posX;
 	}
@@ -249,41 +255,6 @@ public class Map {
 	
 	public int getAgentY(){
 		return posY;
-	}
-	
-	public boolean willExplore(Node currNode){
-		int x = currNode.getX();
-		int y = currNode.getY();
-		// North border
-		for(int i = 0; i < 5; i++){
-			int newX = x - 2 + i;
-			if(itemMap[y-2][newX].getItem() == '`'){
-				return true;
-			}
-		}
-		// East border
-		for(int i = 0; i < 5; i++){
-			int newY = y - 2 + i;
-			if(itemMap[newY][x+2].getItem() == '`'){
-				return true;
-			}
-		}
-		// West border
-		for(int i = 4; i >= 0; i--){
-			int newY = y + 2 - i;
-			if(itemMap[newY][x-2].getItem() == '`'){
-				return true;
-			}
-		}
-		// South border
-		for(int i = 4; i >= 0; i--){
-			int newX = x + 2 - i;
-			if(itemMap[y+2][newX].getItem() == '`'){
-				return true;
-			}
-		}
-		
-		return false;
 	}
 	
 	/**
