@@ -97,9 +97,9 @@ public class Search {
 							pathsToVisit.add(newPath);
 						} else if(n.getItem() == ' '){							//If we encounter a blank tile		
 							//If we're on a boat
-							if(currPath.isInBoat()){
+							if(pathInventory.isOnBoat()){
 								//never thought you'd be here did you.
-								currPath.toggleBoat();
+								pathInventory.toggleBoat();
 							}
 							
 							newPath = currPath.clone();
@@ -133,7 +133,7 @@ public class Search {
 								}
 								
 							} else {									//If we encounter water and we're on a boat, add to frontier
-								if(currPath.isInBoat()){
+								if(pathInventory.isOnBoat()){
 									newPath = currPath.clone();			
 									newPath.addToPath(n);
 									
@@ -150,7 +150,6 @@ public class Search {
 								pathInventory.obtainedDynamite();		
 							} else if(n.getItem() == 'B'){				//If we found Boat
 								newPath = currPath.clone();
-								newPath.toggleBoat();
 								pathInventory.toggleBoat();
 							} else {									//If we found Gold (Non decisive. Expands as basic node)
 								newPath = currPath.clone();

@@ -70,7 +70,7 @@ public class Node{
 	}
 	
 	public boolean isObstacle() {
-		if(item == '*' || item == '~' || item == 'T') {
+		if(item == '*' || item == '~' || item == 'T' || item == '.') {
 			return true;
 		}
 		return false;

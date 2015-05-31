@@ -5,6 +5,31 @@
  *  UNSW Session 1, 2012
 */
 
+/**
+ *	Hi there!
+ *
+ *	Welcome to team James Virtue and Bruce Hely's wizzbang Bounty Bot!
+ *	We call 'im 'Agent Smith' we did! It almost solves everything... if only we
+ *	had a few more hours to get the aquatic searches done. Our agent initially will
+ *	explore a map with no tools in sight. These tools are what we consider 'heuristics'.
+ *	
+ *	If a heuristic is seen, an AStar search is performed from the object, toward our
+ *	agent (to keep the state space small). This rather quickly determines whether the heuristic
+ *	has a path to our agent, and if a path is returned, we merely reverse the path and run it through
+ *	our MoveGenerator, which will produce a string of commands which the bot will execute. Once the
+ *	bot has run out of commands, we can assume that we have safely achieved the object.
+ *
+ *	Heuristics that are seen but cannot be accessed are put onto a priority list of unobtainable heuristics.
+ *	Whenever the player is resting in between paths (issues by both Explore and through Running for objects), that is..
+ *	the player has no more commands to be issued, it will reassess whether or not it can get these unobtainable heuristics,
+ *	in the hope that they had achieved a better inventory/boat to make it to the object.
+ *
+ *	Once a heuristic is noted to be accessible, it will pop the most valuable heuristic to obtain first,
+ *	and issue commands to achieve that object.
+ *
+ *	It returns naiively, not taking any chances to explore any additional terrain it has not visited.
+ *
+ */
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.io.*;
@@ -50,35 +75,34 @@ public class Agent {
 		ArrayList<Node> nextMoves;
 		String nextCommands;
 		
-		ArrayList<DiscoverableNode> tempList = new ArrayList<DiscoverableNode>();
-		
-		//Lets reassess whether we can visit the other heuristics in between all that decision making
-		//Will be empty by the end of it
-		while(!heuristicsUnobtainable.isEmpty()){
-			Node n = heuristicsUnobtainable.poll();
-			
-			//If haven't seen this node before
-			System.out.println("I'm still wanna go get that " + n.getItem() + "...");
-			System.out.println("My inventory! Behond! " + inventory.toString());
-			
-			Search newSearch = new Search(map, inventory, n);		//Create a new search for the node
-			ArrayList<Node> searchResults = newSearch.findReversePath();
-				
-			//Check if we got the path
-			if(!searchResults.isEmpty()){
-				Collections.reverse(searchResults);
-				heuristicsObtainable.add(new DiscoverableNode(n, searchResults));	//If so, add to obtainables
-			} else {
-				tempList.add((DiscoverableNode)n);	//So duct tape...
-			}
-		}
-		
-		//Adds all the ones that didn't make the cut
-		heuristicsUnobtainable.addAll(tempList);
-		
 		//If no moves to process
 		if(moveList.isEmpty()){
-			System.out.println("My inventory! Behond! " + inventory);
+			ArrayList<DiscoverableNode> tempList = new ArrayList<DiscoverableNode>();
+			//Lets reassess whether we can visit the other heuristics in between all that decision making
+			//Will be empty by the end of it
+			while(!heuristicsUnobtainable.isEmpty()){
+				Node n = heuristicsUnobtainable.poll();
+				
+				//If haven't seen this node before
+				System.out.println("I'm still wanna go get that " + n.getItem() + "...");
+				System.out.println("My inventory! Behond! " + inventory.toString());
+				
+				Search newSearch = new Search(map, inventory, n);		//Create a new search for the node
+				ArrayList<Node> searchResults = newSearch.findReversePath();
+					
+				//Check if we got the path
+				if(!searchResults.isEmpty()){
+					Collections.reverse(searchResults);
+					heuristicsObtainable.add(new DiscoverableNode(n, searchResults));	//If so, add to obtainables
+				} else {
+					tempList.add((DiscoverableNode)n);	//So duct tape...
+				}
+			}
+			
+			//Adds all the ones that didn't make the cut
+			heuristicsUnobtainable.addAll(tempList);
+
+			
 			//Obtain a strategy to proceed with
 			nextMoves = decideStrategy(map);
 			
@@ -226,7 +250,7 @@ public class Agent {
 		ArrayList<Node> returnedMoves = null;
 		
 		//Return home if have gold
-		if(foundGold) {
+		if(inventory.containsGold()) {
 			// Get home Node
 			BountyPoint homePoint = new BountyPoint(map.getMaxEdge()/2,map.getMaxEdge()/2);
 			Node homeNode = map.getNode(homePoint);
