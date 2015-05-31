@@ -55,8 +55,16 @@ public class Map {
 		return posX;
 	}
 	
+	public void setPosX(int x) {
+		posX = x;
+	}
+	
 	public int getPosY() {
 		return posY;
+	}
+	
+	public void setPosY(int y) {
+		posY = y;
 	}
 	
 	public int getFacing() {

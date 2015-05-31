@@ -57,6 +57,68 @@ public class Compass {
 		return new BountyPoint(newX, newY);
 	}
 	
+	public boolean isForward(BountyPoint nextPoint){
+		if(nextPoint.equals(getForwardPosition())){
+			return true;
+		}
+		return false;
+	}
+	
+	public BountyPoint getLeftPosition(){
+		int newX = agentPos.getX();
+		int newY = agentPos.getY();
+		
+		if(agentDir == 0){
+			//North
+			newX--;
+		} else if(agentDir == 1){
+			//East
+			newY--;
+		} else if(agentDir == 2){
+			//South
+			newX++;
+		} else {
+			//West
+			newY++;
+		}
+		
+		return new BountyPoint(newX, newY);
+	}
+	
+	public boolean isLeft(BountyPoint nextPoint){
+		if(nextPoint.equals(getLeftPosition())){
+			return true;
+		}
+		return false;
+	}
+	
+	public BountyPoint getRightPosition(){
+		int newX = agentPos.getX();
+		int newY = agentPos.getY();
+		
+		if(agentDir == 0){
+			//North
+			newX++;
+		} else if(agentDir == 1){
+			//East
+			newY++;
+		} else if(agentDir == 2){
+			//South
+			newX--;
+		} else {
+			//West
+			newY--;
+		}
+		
+		return new BountyPoint(newX, newY);
+	}
+	
+	public boolean isRight(BountyPoint nextPoint){
+		if(nextPoint.equals(getRightPosition())){
+			return true;
+		}
+		return false;
+	}
 	
 	public BountyPoint getAgentPosition(){
 		return agentPos;
