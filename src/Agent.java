@@ -70,6 +70,7 @@ public class Agent {
 		//Pop a value off the moveList
 		returnedMove = moveList.poll();
 		
+		//Fail-safe against illegal moves
 		char inFront = view[1][2]; // character directly in front of agent
     	if(inFront == 'T' || inFront == '*' || inFront == '.') {
     		if(returnedMove == 'F' || returnedMove == 'f') {

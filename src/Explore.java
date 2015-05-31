@@ -36,9 +36,9 @@ public class Explore {
 			
 			//Check if we have found a path to the goal
 			if(currNode.getItem() == '`'){
-				found = true;
+				found = true;		
 				returnedPath = currPath.getCurrentPath();
-			} 
+			}
 				
 			if(!found){
 				//For each of the nodes
@@ -49,7 +49,6 @@ public class Explore {
 						
 						
 						Inventory pathInventory = currPath.getInventory();
-						
 						
 						if(n.getItem() == ' '){	//If on boat and go onto land, toggle boat		
 							if(currPath.isInBoat()){
@@ -101,12 +100,17 @@ public class Explore {
 							
 							//Add to the frontier
 							pathsToVisit.add(newPath);
+						} else if(n.getItem() == '`') {
+							newPath = currPath.clone();
+							newPath.addToPath(n);
+							
+							//Add to the frontier
+							pathsToVisit.add(newPath);
 						}
-					} else {}
+					} 
 				}	
 			}	
-		}
-		
+		}	
 		return returnedPath;
 	}
 }

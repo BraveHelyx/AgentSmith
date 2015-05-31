@@ -28,6 +28,13 @@ public class BountyPoint {
 		return y;
 	}
 	
+	public boolean equals(BountyPoint other) {
+		if((this.getX() == other.getX()) && (this.getY() == other.getY())){
+			return true;
+		}
+		return false;
+	}
+	
 	@Override
 	public BountyPoint clone(){
 		return new BountyPoint(x, y);

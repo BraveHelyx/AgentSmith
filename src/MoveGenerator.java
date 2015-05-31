@@ -10,50 +10,62 @@ public class MoveGenerator {
 	
 	MoveGenerator(ArrayList<Node> path_, Compass compass_){
 		path = path_;
-		compass = compass_;
+		compass = compass_.clone();
 		moves = "";
+		generateMoves();
 	}
 	
+	public void addMove(String move){
+		String newString = moves + move;
+		moves = newString;
+	}
+
 	public void generateMoves() {		
 		Iterator<Node> pathIterator = path.iterator();
-		Node nextNode;
+		Node nextNode =  pathIterator.next(); // gets the first node (which is origin of search)
 		BountyPoint nextPoint;
 		while(pathIterator.hasNext()){
-			nextNode = pathIterator.next();
+			nextNode = pathIterator.next(); // gets actual next node
 			nextPoint = nextNode.getPoint();
 			if(compass.isForward(nextPoint)){
 				if(nextNode.getItem() == '*'){
-					moves += "BF";
+					addMove("BF");
 				} else if(nextNode.getItem() == 'T'){
-					moves += "CF";
+					addMove("CF");
 				} else {
-					moves += "F";
+					addMove("F");
 				}
 			} else if(compass.isRight(nextPoint)){
 				if(nextNode.getItem() == '*'){
-					moves += "RBF";
+					addMove("RBF");
 				} else if(nextNode.getItem() == 'T'){
-					moves += "RCF";
+					addMove("RCF");
 				} else {
-					moves += "RF";
+					addMove("RF");
 				}
+				compass.turnRight();
 			} else if(compass.isLeft(nextPoint)){
 				if(nextNode.getItem() == '*'){
-					moves += "LBF";
+					addMove("LBF");
 				} else if(nextNode.getItem() == 'T'){
-					moves += "LCF";
+					addMove("LCF");
 				} else {
-					moves += "LF";
+					addMove("LF");
 				}
+				compass.turnLeft();
 			} else {
 				if(nextNode.getItem() == '*'){
-					moves += "RRBF";
+					addMove("RRBF");
 				} else if(nextNode.getItem() == 'T'){
-					moves += "RRCF";
+					addMove("RRCF");
 				} else {
-					moves += "RRF";
+					addMove("RRF");
 				}
-			}			
+				compass.turnRight();
+				compass.turnRight();
+				
+			}
+			compass.setAgentPosition(compass.getForwardPosition());
 		}		
 	}
 	
