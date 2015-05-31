@@ -23,8 +23,27 @@ public class DiscoverableNode extends Node implements Comparable<DiscoverableNod
 		pathToNode = _pathToNode;
 	}
 	
+	public DiscoverableNode(Node oldNode){
+		super(oldNode.getX(), oldNode.getY(), oldNode.getItem(), 0);
+		
+		//Set priority
+		if(oldNode.getItem() == 'g'){
+			objectHeuristic = 2;
+		} else if (oldNode.getItem() == 'a'){
+			objectHeuristic = 1;
+		} else if (oldNode.getItem() == 'B'){
+			objectHeuristic = 0;
+		} else {
+			objectHeuristic = -1;
+		}
+	}
+	
 	public ArrayList<Node> getPathToNode(){
 		return pathToNode;
+	}
+	
+	public void setPathToNode(ArrayList<Node> path){
+		pathToNode = path;
 	}
 	
 	public int getObjectHeuristic(){

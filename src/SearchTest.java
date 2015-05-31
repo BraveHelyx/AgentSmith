@@ -29,8 +29,10 @@ public class SearchTest {
 		Inventory scenarioInventory = new Inventory(false, false, 1);
 		Search testSearch1 = new Search(testScenario1, scenarioInventory, testScenario1.getMap()[2][3]); 
 		
-		pathToObjective = testSearch1.findPath();
+		pathToObjective = testSearch1.findReversePath();
 		assertFalse(pathToObjective.isEmpty());
+		
+		
 		
 		//Solving s1.in
 		Map testScenario2 = new Map("src/s1.in");
@@ -40,6 +42,8 @@ public class SearchTest {
 		
 		assertFalse(pathToObjective.isEmpty());
 		pathToObjective.clear();
+		
+		
 		
 	}
 

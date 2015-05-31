@@ -10,6 +10,8 @@ import java.util.concurrent.TimeUnit;
 import java.io.*;
 import java.net.*;
 
+import com.sun.jmx.remote.internal.ArrayQueue;
+
 
 public class Agent {
 
@@ -33,8 +35,9 @@ public class Agent {
 	//List of nodes that contain dynamite
 	ArrayList<Node> dynamite = new ArrayList<Node>();
 	
+	ArrayList<Node> heuristicsScanned = new ArrayList<Node>();
 	ArrayList<Node> heuristicsSeen = new ArrayList<Node>();
-	ArrayList<Node> heuristicsUnobtainable = new ArrayList<Node>();
+	PriorityQueue<DiscoverableNode> heuristicsUnobtainable = new PriorityQueue<DiscoverableNode>();
 	PriorityQueue<DiscoverableNode> heuristicsObtainable = new PriorityQueue<DiscoverableNode>();
 	
 	public char get_action( char view[][] ) {
@@ -47,9 +50,35 @@ public class Agent {
 		ArrayList<Node> nextMoves;
 		String nextCommands;
 		
+		ArrayList<DiscoverableNode> tempList = new ArrayList<DiscoverableNode>();
+		
+		//Lets reassess whether we can visit the other heuristics in between all that decision making
+		//Will be empty by the end of it
+		while(!heuristicsUnobtainable.isEmpty()){
+			Node n = heuristicsUnobtainable.poll();
+			
+			//If haven't seen this node before
+			System.out.println("I'm still wanna go get that " + n.getItem() + "...");
+			System.out.println("My inventory! Behond! " + inventory.toString());
+			
+			Search newSearch = new Search(map, inventory, n);		//Create a new search for the node
+			ArrayList<Node> searchResults = newSearch.findReversePath();
+				
+			//Check if we got the path
+			if(!searchResults.isEmpty()){
+				Collections.reverse(searchResults);
+				heuristicsObtainable.add(new DiscoverableNode(n, searchResults));	//If so, add to obtainables
+			} else {
+				tempList.add((DiscoverableNode)n);	//So duct tape...
+			}
+		}
+		
+		//Adds all the ones that didn't make the cut
+		heuristicsUnobtainable.addAll(tempList);
+		
 		//If no moves to process
 		if(moveList.isEmpty()){
-			
+			System.out.println("My inventory! Behond! " + inventory);
 			//Obtain a strategy to proceed with
 			nextMoves = decideStrategy(map);
 			
@@ -214,22 +243,31 @@ public class Agent {
 		scanForHeuristics(map);	
 		
 		//For every node in heuristicsSeen, can we obtain it? Classify everything
-		if(!heuristicsSeen.isEmpty()){
-			for(Node n : heuristicsSeen){
-				Search newSearch = new Search(map, inventory, n);		//Create a new search for the node
-				searchResults = newSearch.findPath();
+		if(!heuristicsScanned.isEmpty()){
+			for(Node n : heuristicsScanned){
 				
-				//Check if we got a path
-				if(!searchResults.isEmpty()){
-					heuristicsObtainable.add(new DiscoverableNode(n, searchResults));	//If so, add to obtainables
-				} else {
-					heuristicsUnobtainable.add(n);	//If not, add to unobtainable
-				}		
+				//If haven't seen this node before
+				if(!heuristicsSeen.contains(n)){
+					System.out.println("I'm wanna go get that " + n.getItem());
+					System.out.println("My inventory! Behond! " + inventory.toString());
+					Search newSearch = new Search(map, inventory, n);		//Create a new search for the node
+					searchResults = newSearch.findReversePath();
+					
+					//Check if we got a path
+					if(!searchResults.isEmpty()){
+						Collections.reverse(searchResults);
+						heuristicsObtainable.add(new DiscoverableNode(n, searchResults));	//If so, add to obtainables
+					} else {
+						heuristicsUnobtainable.add(new DiscoverableNode(n));	//If not, add to unobtainable
+					}	
+					heuristicsSeen.add(n);
+				}
+	
 			}
 		}
 		
 		//We have classified all heuristics
-		heuristicsSeen.clear();
+		heuristicsScanned.clear();
 		
 		//Get moves to heuristic if obtainable ones exist
 		if(!heuristicsObtainable.isEmpty()){
@@ -293,7 +331,7 @@ public class Agent {
 		for(i = 0; i < map.getMaxEdge(); i++){
 			for(j = 0; j < map.getMaxEdge(); j++){
 				if(currentMap[i][j].isHeuristic()){
-					heuristicsSeen.add(currentMap[i][j].clone());
+					heuristicsScanned.add(currentMap[i][j].clone());
 				}
 			}
 		}
