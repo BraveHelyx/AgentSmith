@@ -25,8 +25,8 @@ public class Search {
 		int goalX = objective.getX();
 		int goalY = objective.getY();
 		
-		for(i = 0; i < Map.MAXEDGE; i++){
-			for(j = 0; j < Map.MAXEDGE; j++){
+		for(i = 0; i < map.getMaxEdge(); i++){
+			for(j = 0; j < map.getMaxEdge(); j++){
 				grid[i][j].setH(Math.abs(goalX - j) + Math.abs(goalY - i));
 			}
 		}
@@ -40,8 +40,8 @@ public class Search {
 		int i = 0;
 		int j = 0;
 		
-		for(i = 0; i < Map.MAXEDGE; i++){
-			for(j = 0; j < Map.MAXEDGE; j++){
+		for(i = 0; i < map.getMaxEdge(); i++){
+			for(j = 0; j < map.getMaxEdge(); j++){
 				grid[i][j].setH(0);
 			}
 		}

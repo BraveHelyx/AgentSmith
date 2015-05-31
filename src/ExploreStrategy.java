@@ -1,6 +1,7 @@
 
 public class ExploreStrategy implements Strategy{
 	
+	private Map localMap;
 	private Node[][] itemMap;
 	private int posX;
 	private int posY;
@@ -9,6 +10,7 @@ public class ExploreStrategy implements Strategy{
 	
 	@Override
 	public String decideMove(Map map) {
+		localMap = map;
 		itemMap = map.getMap();
 		posX = map.getPosX();
 		posY = map.getPosY();
@@ -138,7 +140,7 @@ public class ExploreStrategy implements Strategy{
 			return 200;
 			
 		case 1:
-			while(x < Map.MAXEDGE) {
+			while(x < localMap.getMaxEdge()) {
 				x += 1;
 				numSpaces += 1;
 				
@@ -159,7 +161,7 @@ public class ExploreStrategy implements Strategy{
 			return 200;
 			
 		case 2:
-			while(y < Map.MAXEDGE) {
+			while(y < localMap.getMaxEdge()) {
 				y += 1;
 				numSpaces += 1;
 				

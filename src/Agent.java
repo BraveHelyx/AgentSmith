@@ -16,7 +16,7 @@ public class Agent {
 
 	//Code that agent uses to select an action
 
-	Map map = new Map();
+	Map map = new Map(80);
 	Compass compass = new Compass();
 	Inventory inventory = new Inventory();
 	
@@ -255,8 +255,8 @@ public class Agent {
 		
 		int i = 0;
 		int j = 0;
-		for(i = 0; i < Map.MAXEDGE; i++){
-			for(j = 0; j < Map.MAXEDGE; j++){
+		for(i = 0; i < map.getMaxEdge(); i++){
+			for(j = 0; j < map.getMaxEdge(); j++){
 				if(currentMap[i][j].isHeuristic()){
 					heuristicsSeen.add(currentMap[i][j].clone());
 				}

@@ -8,6 +8,7 @@ import java.util.ArrayList;
  *
  */
 public class Path implements Comparable<Path>{
+	
 	private ArrayList<Node> currentPath = new ArrayList<Node>();
 	Node currentNode;
 	private int numNodes;
@@ -106,7 +107,7 @@ public class Path implements Comparable<Path>{
 		if(currX == nextX){			//If we have moved Vertically, then the X Values are the same
 			if(currDirection == Compass.WEST || currDirection == Compass.EAST){
 				numRotations++;
-			}
+			} 
 		} else {					//If we have moved Horizontally, then the X Values are different
 			if(currDirection == Compass.NORTH || currDirection == Compass.SOUTH){
 				numRotations++;

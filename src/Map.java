@@ -17,8 +17,7 @@ import java.util.ArrayList;
 public class Map {
 	
 	private Node itemMap[][];
-	public static int MAXEDGE = 80;
-	private Node currentGoal;
+	private int maxEdge;
 	private int posX;
 	private int posY;
 	private int facing;
@@ -26,7 +25,8 @@ public class Map {
 	//Flags
 	private boolean initUpdate;
 	
-	public Map() {
+	public Map(int gridLength) {
+		maxEdge = gridLength;
 		init();
 		initUpdate = false;
 	}
@@ -34,15 +34,15 @@ public class Map {
 	public void init() {
 		
 		//Sets the agent's initial position
-		posX = MAXEDGE/2;
-		posY = MAXEDGE/2;
+		posX = maxEdge/2;
+		posY = maxEdge/2;
 		
-		itemMap = new Node[MAXEDGE][MAXEDGE];
+		itemMap = new Node[maxEdge][maxEdge];
 		
 		//Initialise the map with nodes containing undiscovered symbols
-		for(int j = 0; j < MAXEDGE; j++) {
-			for(int i = 0; i < MAXEDGE; i++) {
-				itemMap[i][j] = new Node(i, j, '`', 0, 0);
+		for(int j = 0; j < maxEdge; j++) {
+			for(int i = 0; i < maxEdge; i++) {
+				itemMap[i][j] = new Node(i, j, '`', 0);
 			}
 		}
 	}
@@ -183,9 +183,12 @@ public class Map {
 		return facing;
 	}
 	
+	public int getMaxEdge(){
+		return maxEdge;
+	}
 	public void printMap() {
-		for(int j = 0; j < MAXEDGE; j++) {
-			for(int i = 0; i < MAXEDGE; i++) {
+		for(int j = 0; j < maxEdge; j++) {
+			for(int i = 0; i < maxEdge; i++) {
 				System.out.print(itemMap[i][j].getItem());
 			}
 			System.out.print('\n');

@@ -15,6 +15,8 @@
 public class Inventory{
 	private boolean axe;
 	private boolean gold;
+	private boolean onBoat;
+	private Node boatLocation;
 	
 	private int numDynamite;	
 
@@ -24,7 +26,8 @@ public class Inventory{
 	public Inventory(){
 		axe = false;
 		gold = false;
-		
+		onBoat = false;
+		boatLocation = null;
 		numDynamite = 0;
 	}
 	
@@ -59,6 +62,14 @@ public class Inventory{
 	
 	public void useDynamite(){
 		numDynamite--;
+	}
+	
+	public boolean isOnBoat(){
+		return onBoat;
+	}
+	
+	public void toggleBoat(){
+		onBoat = onBoat ? false : true;
 	}
 	
 	/*
