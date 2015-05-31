@@ -35,11 +35,9 @@ public class Explore {
 			currNode = currPath.getCurrentNode();
 			
 			//Check if we have found a path to the goal
-			if(currNode.getItem() == '`'){
+			if(map.willExplore(currNode)){
 				found = true;		
 				returnedPath = currPath.getCurrentPath();
-				int size = returnedPath.size();
-				returnedPath.remove(size-1);
 			}
 				
 			if(!found){
