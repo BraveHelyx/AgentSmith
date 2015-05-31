@@ -4,7 +4,7 @@
  */
 public class Node{
 	
-	BountyPoint point;
+	private BountyPoint point;
 	private char item;
 	private int h;
 	

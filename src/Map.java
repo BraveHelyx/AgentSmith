@@ -1,3 +1,7 @@
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 
 
@@ -25,13 +29,26 @@ public class Map {
 	//Flags
 	private boolean initUpdate;
 	
+	/**
+	 * Constructor
+	 * @param gridLength		The length of the local map to generate
+	 */
 	public Map(int gridLength) {
 		maxEdge = gridLength;
 		init();
 		initUpdate = false;
 	}
 	
-	public void init() {
+	/**
+	 * Constructor for creating a predesigned map
+	 * @param gridLength		The length of the predesigned map
+	 * @param inputMap
+	 */
+	public Map(String mapName){
+		initRecreatedMap(mapName);
+	}
+	
+	private void init() {
 		
 		//Sets the agent's initial position
 		posX = maxEdge/2;
@@ -40,12 +57,78 @@ public class Map {
 		itemMap = new Node[maxEdge][maxEdge];
 		
 		//Initialise the map with nodes containing undiscovered symbols
-		for(int j = 0; j < maxEdge; j++) {
-			for(int i = 0; i < maxEdge; i++) {
-				itemMap[i][j] = new Node(i, j, '`', 0);
+		for(int i = 0; i < maxEdge; i++) {
+			for(int j = 0; j < maxEdge; j++) {
+				itemMap[j][i] = new Node(j, i, '`', 0);
 			}
 		}
 	}
+	
+	private void initRecreatedMap( String mapName ) {
+
+		BufferedReader in;
+		boolean agent_here;
+		int r,c;
+
+		char[][] map = new char[1024][];
+
+		r=-1;
+	      
+		try {
+			in = new BufferedReader(new FileReader(mapName));
+	        String oneLine = in.readLine();
+	        while(( oneLine != null )&&( oneLine.length() > 0 )) {
+	        	map[++r] = new char[oneLine.length()];
+	            for( c=0; c < oneLine.length(); c++ ) {
+	            	map[r][c] = oneLine.charAt(c);
+	            	agent_here = true;
+	            	switch( map[r][c] ) {
+	            	case '^': facing = Compass.NORTH; break;
+	                case '>': facing = Compass.EAST;  break;
+	                case 'v': facing = Compass.SOUTH; break;
+	                case '<': facing = Compass.WEST;  break;
+	                default:  agent_here = false;
+	            	}
+	            	if( agent_here ) {
+	            		posX = c;
+	            		posY = r;
+	            	}
+	            }
+	            oneLine = in.readLine();
+	        }
+		}
+		catch( FileNotFoundException fnfe ) {
+			fnfe.printStackTrace();
+		}
+		catch( IOException ioe ) {
+			ioe.printStackTrace();
+		}
+
+		int gridHeight = r+1; // number of rows
+		int gridWidth  = map[0].length; // Length of initial row
+		
+		maxEdge = Math.max(gridHeight, gridWidth);
+		
+		//Create the map with maximum dimensions
+		itemMap = new Node[maxEdge][maxEdge];
+		int i = 0;
+		int j = 0;
+		
+		//Fill the map with nodes containing items in char map
+		for(i = 0; i < maxEdge; i++){
+			for(j = 0; j < maxEdge; j++){
+				if(i < gridHeight && j < gridWidth){
+					itemMap[i][j] = new Node(j, i, map[i][j], 0);
+				} else {
+					itemMap[i][j] = new Node(j, i, '.', 0);
+				}	 
+			}
+		}
+		
+		printMap();
+		
+    }
+
 	
 	public Node[][] getMap() {
 		return itemMap;
@@ -158,7 +241,7 @@ public class Map {
 	}
 	
 	public Node getAgentNode(){
-		return itemMap[posX][posY];
+		return itemMap[posY][posX];
 	}
 	public int getAgentX(){
 		return posX;
@@ -179,10 +262,10 @@ public class Map {
 		ArrayList<Node> adjacentNodes = new ArrayList<Node>();
 		int x = currNode.getX();
 		int y = currNode.getY();
-		adjacentNodes.add(itemMap[x][y-1]);
-		adjacentNodes.add(itemMap[x+1][y]);
-		adjacentNodes.add(itemMap[x][y+1]);
-		adjacentNodes.add(itemMap[x-1][y]);
+		adjacentNodes.add(itemMap[y][x-1]);
+		adjacentNodes.add(itemMap[y+1][x]);
+		adjacentNodes.add(itemMap[y][x+1]);
+		adjacentNodes.add(itemMap[y-1][x]);
 		
 		return adjacentNodes;
 	}
@@ -194,10 +277,15 @@ public class Map {
 	public int getMaxEdge(){
 		return maxEdge;
 	}
+	   
 	public void printMap() {
+		char currItem;
 		for(int j = 0; j < maxEdge; j++) {
 			for(int i = 0; i < maxEdge; i++) {
-				System.out.print(itemMap[i][j].getItem());
+				currItem = itemMap[j][i].getItem();
+				if(currItem != '.'){
+					System.out.print(itemMap[j][i].getItem());
+				}
 			}
 			System.out.print('\n');
 		}
