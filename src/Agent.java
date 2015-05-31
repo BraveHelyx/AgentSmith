@@ -70,7 +70,7 @@ public class Agent {
 		
 		// delay
 		try {
-			TimeUnit.MILLISECONDS.sleep(500);
+			TimeUnit.MILLISECONDS.sleep(1500);
 		} catch (InterruptedException e) {
 			System.out.println("Interrupt Exception" + e);
 		}
@@ -221,6 +221,20 @@ public class Agent {
 			System.out.println("GET SHINY!!");
 			DiscoverableNode targetNode = heuristicsObtainable.poll();
 			returnedMoves = targetNode.getPathToNode();
+			
+			//Preupdate the value fields as if we have already obtainedthe item
+			if(targetNode.getItem() == 'g'){
+				inventory.obtainedGold();
+				targetNode.setItem(' ');
+			} else if (targetNode.getItem() == 'a'){
+				inventory.obtainedAxe();
+				targetNode.setItem(' ');
+			} else if (targetNode.getItem() == 'B'){
+				inventory.toggleBoat();
+			} else if (targetNode.getItem() == 'd'){
+				inventory.obtainedDynamite();
+			}
+
 		} else {
 			System.out.println("EXPLORE!!");
 			Strategy explore = new ExploreStrategy();
