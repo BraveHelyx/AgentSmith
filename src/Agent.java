@@ -198,7 +198,7 @@ public class Agent {
 		//Adds all the nodes that are heuristics to the seen heuristics 
 		scanForHeuristics(map);	
 		
-		//For every node in heuristicsSeen, can we obtain it?
+		//For every node in heuristicsSeen, can we obtain it? Classify everything
 		if(!heuristicsSeen.isEmpty()){
 			for(Node n : heuristicsSeen){
 				Search newSearch = new Search(map, inventory, n);		//Create a new search for the node
@@ -210,15 +210,19 @@ public class Agent {
 				} else {
 					heuristicsUnobtainable.add(n);	//If not, add to unobtainable
 				}		
-				heuristicsSeen.remove(n);			//Remove the node once categorized
 			}
 		}
 		
+		//We have classified all heuristics
+		heuristicsSeen.clear();
+		
 		//Get moves to heuristic if obtainable ones exist
 		if(!heuristicsObtainable.isEmpty()){
+			System.out.println("GET SHINY!!");
 			DiscoverableNode targetNode = heuristicsObtainable.poll();
 			returnedMoves = targetNode.getPathToNode();
 		} else {
+			System.out.println("EXPLORE!!");
 			Strategy explore = new ExploreStrategy();
 			returnedMoves = explore.decideMove(map, inventory, compass);
 		}
