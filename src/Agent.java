@@ -56,6 +56,7 @@ public class Agent {
 			//Make move generator
 			MoveGenerator m = new MoveGenerator(nextMoves, compass);
 			nextCommands = m.getMoves();
+			
 			//Add all the characters individually to the moveList
 			for(char c : nextCommands.toCharArray()){
 				moveList.add(c);
@@ -70,7 +71,7 @@ public class Agent {
 		
 		// delay
 		try {
-			TimeUnit.MILLISECONDS.sleep(1500);
+			TimeUnit.MILLISECONDS.sleep(500);
 		} catch (InterruptedException e) {
 			System.out.println("Interrupt Exception" + e);
 		}
@@ -194,6 +195,20 @@ public class Agent {
 		ArrayList<Node> searchResults = null;
 
 		ArrayList<Node> returnedMoves = null;
+		
+		//Return home if have gold
+		if(foundGold) {
+			// Get home Node
+			BountyPoint homePoint = new BountyPoint(map.getMaxEdge()/2,map.getMaxEdge()/2);
+			Node homeNode = map.getNode(homePoint);
+			
+			// Create a new search for the home node
+			Search newSearch = new Search(map, inventory, homeNode);
+			returnedMoves = newSearch.findPath();
+			
+			// Return the moves straight away
+			return returnedMoves;
+		}
 		
 		//Adds all the nodes that are heuristics to the seen heuristics 
 		scanForHeuristics(map);	
