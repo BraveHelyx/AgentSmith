@@ -87,7 +87,7 @@ public class Agent {
 				System.out.println("I'm still wanna go get that " + n.getItem() + "...");
 				System.out.println("My inventory! Behond! " + inventory.toString());
 				
-				Search newSearch = new Search(map, inventory, n);		//Create a new search for the node
+				Search newSearch = new Search(map, inventory, n, false);		//Create a new search for the node
 				ArrayList<Node> searchResults = newSearch.findReversePath();
 					
 				//Check if we got the path
@@ -95,7 +95,7 @@ public class Agent {
 					Collections.reverse(searchResults);
 					heuristicsObtainable.add(new DiscoverableNode(n, searchResults));	//If so, add to obtainables
 				} else {
-					tempList.add((DiscoverableNode)n);	//So duct tape...
+					tempList.add((DiscoverableNode)n);	//So duct tape...works for me.
 				}
 			}
 			
@@ -124,7 +124,7 @@ public class Agent {
 		
 		// delay
 		try {
-			TimeUnit.MILLISECONDS.sleep(500);
+			TimeUnit.MILLISECONDS.sleep(100);
 		} catch (InterruptedException e) {
 			System.out.println("Interrupt Exception" + e);
 		}
@@ -139,7 +139,16 @@ public class Agent {
 	public void updateLocalAssets(char move){
 		switch( move ) { // if character is a valid action, return it
         case 'F':
-        case 'f':
+        case 'f':        	
+        	BountyPoint inFront = compass.getForwardPosition();
+        	char item = map.getNode(inFront).getItem();
+        	
+        	if(item == 'B'){
+        		inventory.toggleBoat();
+        	} else if(inventory.isOnBoat() && item == ' '){
+        		inventory.toggleBoat();
+        	}
+        	
     		compass.setAgentPosition(compass.getForwardPosition());
     		break;
     		
@@ -251,16 +260,31 @@ public class Agent {
 		
 		//Return home if have gold
 		if(inventory.containsGold()) {
+			foundGold = false; // stop it falling into the next if statement
+			
 			// Get home Node
 			BountyPoint homePoint = new BountyPoint(map.getMaxEdge()/2,map.getMaxEdge()/2);
 			Node homeNode = map.getNode(homePoint);
 			
 			// Create a new search for the home node
-			Search newSearch = new Search(map, inventory, homeNode);
-			returnedMoves = newSearch.findPath();
+			Search newSearch = new Search(map, inventory, homeNode, true);
+			searchResults = newSearch.findPath();
 			
-			// Return the moves straight away
-			return returnedMoves;
+			if(!searchResults.isEmpty()){
+				return searchResults;
+			}
+		}
+		
+		//If see the gold and can get it, go get it.
+		if(foundGold){
+			
+			Search newSearch = new Search(map, inventory, goldNode, true);
+			searchResults = newSearch.findReversePath();
+			
+			if(!searchResults.isEmpty()){
+				Collections.reverse(searchResults);
+				return searchResults;
+			}
 		}
 		
 		//Adds all the nodes that are heuristics to the seen heuristics 
@@ -274,7 +298,7 @@ public class Agent {
 				if(!heuristicsSeen.contains(n)){
 					System.out.println("I'm wanna go get that " + n.getItem());
 					System.out.println("My inventory! Behond! " + inventory.toString());
-					Search newSearch = new Search(map, inventory, n);		//Create a new search for the node
+					Search newSearch = new Search(map, inventory, n, true);		//Create a new search for the node
 					searchResults = newSearch.findReversePath();
 					
 					//Check if we got a path
@@ -307,7 +331,7 @@ public class Agent {
 				inventory.obtainedAxe();
 				targetNode.setItem(' ');
 			} else if (targetNode.getItem() == 'B'){
-				inventory.toggleBoat();
+				//inventory.toggleBoat();
 			} else if (targetNode.getItem() == 'd'){
 				inventory.obtainedDynamite();
 			}
@@ -315,7 +339,10 @@ public class Agent {
 		} else {
 			System.out.println("EXPLORE!!");
 			Strategy explore = new ExploreStrategy();
-			returnedMoves = explore.decideMove(map, inventory, compass);
+			searchResults = explore.decideMove(map, inventory, compass);
+			if(!searchResults.isEmpty()){
+				returnedMoves = searchResults;
+			}
 		}
 		
 		
@@ -356,6 +383,9 @@ public class Agent {
 			for(j = 0; j < map.getMaxEdge(); j++){
 				if(currentMap[i][j].isHeuristic()){
 					heuristicsScanned.add(currentMap[i][j].clone());
+				} else if(currentMap[i][j].isGold()){
+					foundGold = true;
+					goldNode = currentMap[i][j].clone();
 				}
 			}
 		}

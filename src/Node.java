@@ -62,6 +62,13 @@ public class Node{
 		item = item_;
 	}
 	
+	public boolean isGold(){
+		if(item == 'g'){
+			return true;
+		}
+		return false;
+	}
+	
 	public boolean isHeuristic(){
 		if(item == 'g' || item == 'a' || item == 'd' || item == 'B'){
 			return true;

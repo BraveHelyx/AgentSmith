@@ -179,6 +179,38 @@ public class Map {
 		}
 	}
 	
+	public void mapEdgeNorth(int row) {
+		for(int i = 0; i <= row; i++){
+			for(int j = 0; j < maxEdge; j++){
+				itemMap[i][j].setItem('.');
+			}			
+		}
+	}
+	
+	public void mapEdgeEast(int col) {
+		for(int i = col; i < maxEdge; i++){
+			for(int j = 0; j < maxEdge; j++){
+				itemMap[j][i].setItem('.');
+			}
+		}
+	}
+	
+	public void mapEdgeSouth(int row) {
+		for(int i = row; i < maxEdge; i++){
+			for(int j = 0; j < maxEdge; j++){
+				itemMap[i][j].setItem('.');
+			}
+		}
+	}
+	
+	public void mapEdgeWest(int col) {
+		for(int i = 0; i <= col; i++){
+			for(int j = 0; j < maxEdge; j++){
+				itemMap[j][i].setItem('.');
+			}
+		}
+	}
+	
 	public void update(char[][] view, Compass compass) {
 		if(!initUpdate) {	//Run Once
 			initUpdate(view);
@@ -199,7 +231,11 @@ public class Map {
 				for(int i = 0; i < 5; i++) {
 					x = posX - 2 + i;
 					y = posY - 2;
-					itemMap[y][x].setItem(view[0][i]);
+					if(view[0][2] == '.'){
+						mapEdgeNorth(y);
+					} else {
+						itemMap[y][x].setItem(view[0][i]);
+					}
 				}
 				
 				itemMap[posY-1][posX].setItem(view[1][2]);	// update directly in front
@@ -211,7 +247,11 @@ public class Map {
 				for(int j = 0; j < 5; j++) {
 					x = posX + 2;
 					y = posY - 2 + j;
-					itemMap[y][x].setItem(view[0][j]);
+					if(view[0][2] == '.'){
+						mapEdgeEast(x);
+					} else {
+						itemMap[y][x].setItem(view[0][j]);
+					}
 				}
 				
 				itemMap[posY][posX+1].setItem(view[1][2]);	// update directly in front
@@ -223,7 +263,11 @@ public class Map {
 				for(int i = 0; i < 5; i++) {
 					x = posX + 2 - i;
 					y = posY + 2;
-					itemMap[y][x].setItem(view[0][i]);
+					if(view[0][2] == '.'){
+						mapEdgeSouth(y);
+					} else {
+						itemMap[y][x].setItem(view[0][i]);
+					}
 				}
 				
 				itemMap[posY+1][posX].setItem(view[1][2]);	// update directly in front
@@ -235,7 +279,11 @@ public class Map {
 				for(int j = 0; j < 5; j++) {
 					x = posX - 2;
 					y = posY + 2 - j;
-					itemMap[y][x].setItem(view[0][j]);
+					if(view[0][2] == '.'){
+						mapEdgeWest(x);
+					} else {
+						itemMap[y][x].setItem(view[0][j]);
+					}
 				}
 				
 				itemMap[posY][posX-1].setItem(view[1][2]);	// update directly in front

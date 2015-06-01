@@ -35,9 +35,10 @@ public class Inventory{
 	/*
 	 * Overloaded constructor
 	 */
-	public Inventory(boolean hasAxe, boolean hasGold, int numDynamite){
+	public Inventory(boolean hasAxe, boolean hasGold, int numDynamite, boolean isOnBoat){
 		axe = hasAxe;
 		gold = hasGold;
+		onBoat = isOnBoat;
 		this.numDynamite = numDynamite;
 	}
 	
@@ -71,6 +72,14 @@ public class Inventory{
 		return onBoat;
 	}
 	
+	public void getOnBoat(){
+		onBoat = true;
+	}
+	
+	public void getOffBoat(){
+		onBoat = false;
+	}
+	
 	public void toggleBoat(){
 		onBoat = onBoat ? false : true;
 	}
@@ -100,7 +109,7 @@ public class Inventory{
 	
 	@Override
 	public Inventory clone(){
-		return new Inventory(axe, gold, numDynamite);
+		return new Inventory(axe, gold, numDynamite, onBoat);
 	}
 	
 	@Override

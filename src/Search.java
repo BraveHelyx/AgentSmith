@@ -7,11 +7,13 @@ public class Search {
 	Map map;
 	Inventory inventory;
 	Node objective;
+	private boolean useDynamite;
 	
-	public Search(Map _map, Inventory _inventory, Node _objective){
+	public Search(Map _map, Inventory _inventory, Node _objective, boolean useDynamite_){
 		map = _map;
 		inventory = _inventory;
 		objective = _objective;
+		useDynamite = useDynamite_;
 	}
 	
 	/**
@@ -95,11 +97,19 @@ public class Search {
 							
 							//Add to the frontier
 							pathsToVisit.add(newPath);
+						} else if(n.getItem() == '~'){
+							if(pathInventory.isOnBoat()){
+								newPath = currPath.clone();
+								newPath.addToPath(n);
+								
+								//Add to the frontier
+								pathsToVisit.add(newPath);
+							}
 						} else if(n.getItem() == ' '){							//If we encounter a blank tile		
 							//If we're on a boat
 							if(pathInventory.isOnBoat()){
 								//never thought you'd be here did you.
-								pathInventory.toggleBoat();
+								pathInventory.getOffBoat();
 							}
 							
 							newPath = currPath.clone();
@@ -120,7 +130,7 @@ public class Search {
 									pathsToVisit.add(newPath);
 								}
 								
-							} else if(n.getItem() == '*'){				//If we encounter a wall and we have dynamite, add to frontier
+							} else if(n.getItem() == '*' && useDynamite){				//If we encounter a wall and we have dynamite, add to frontier
 								
 								if(pathInventory.containsDynamite()){	
 									//Use dynamite to expand and then clone
@@ -145,19 +155,30 @@ public class Search {
 							if(n.getItem() == 'a'){						//If we found axe
 								newPath = currPath.clone();
 								pathInventory.obtainedAxe();
+								
+								newPath.addToPath(n);
+								pathsToVisit.add(newPath);
 							} else if(n.getItem() == 'd'){				//If we found dynamite
 								newPath = currPath.clone();
-								pathInventory.obtainedDynamite();		
+								pathInventory.obtainedDynamite();
+								
+								newPath.addToPath(n);
+								pathsToVisit.add(newPath);
 							} else if(n.getItem() == 'B'){				//If we found Boat
 								newPath = currPath.clone();
-								pathInventory.toggleBoat();
-							} else {									//If we found Gold (Non decisive. Expands as basic node)
-								newPath = currPath.clone();
-							}
+								pathInventory.getOnBoat();
+								
+								newPath.addToPath(n);
+								pathsToVisit.add(newPath);
+							}	
 							
+						} else if(n.isGold()){
+							newPath = currPath.clone();
 							newPath.addToPath(n);
-							pathsToVisit.add(newPath);				
-						} 
+							
+							//Add to the frontier
+							pathsToVisit.add(newPath);
+						}
 					}
 				}	
 			}	
