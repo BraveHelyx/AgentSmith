@@ -27,6 +27,7 @@ public class Inventory{
 		axe = false;
 		gold = false;
 		onBoat = false;
+		
 		boatLocation = null;
 		numDynamite = 0;
 	}
@@ -39,6 +40,8 @@ public class Inventory{
 		gold = hasGold;
 		this.numDynamite = numDynamite;
 	}
+	
+	
 	
 	public boolean containsAxe(){
 		return axe;
@@ -81,6 +84,14 @@ public class Inventory{
 			return true;
 		}
 		return false;
+	}
+	
+	public void setBoatLocation(Node n){
+		boatLocation = n;
+	}
+	
+	public Node getBoatLocation(){
+		return boatLocation;
 	}
 	
 	public int getNumDynamite(){

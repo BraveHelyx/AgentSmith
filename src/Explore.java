@@ -89,8 +89,8 @@ public class Explore {
 						Inventory pathInventory = currPath.getInventory();
 						
 						if(n.getItem() == ' '){	//If on boat and go onto land, toggle boat		
-							if(currPath.isInBoat()){
-								currPath.toggleBoat();
+							if(pathInventory.isOnBoat()){
+								pathInventory.toggleBoat();
 							}
 							newPath = currPath.clone();
 							newPath.addToPath(n);
@@ -124,7 +124,7 @@ public class Explore {
 								}
 								
 							} else {									//If we encounter water and we're on a boat, add to frontier
-								if(currPath.isInBoat()){
+								if(pathInventory.isOnBoat()){
 									newPath = currPath.clone();			
 									newPath.addToPath(n);
 									
@@ -135,17 +135,11 @@ public class Explore {
 						} else if(n.getItem() == 'B'){					//If item expanded is a boat
 							newPath = currPath.clone();
 							newPath.addToPath(n);
-							newPath.toggleBoat();
+							pathInventory.toggleBoat();
 							
 							//Add to the frontier
 							pathsToVisit.add(newPath);
-						} else {
-							newPath = currPath.clone();
-							newPath.addToPath(n);
-							
-							//Add to the frontier
-							pathsToVisit.add(newPath);
-						}
+						} 
 					} 
 				}	
 			}	
