@@ -88,7 +88,15 @@ public class Explore {
 						
 						Inventory pathInventory = currPath.getInventory();
 						
-						if(n.getItem() == ' '){	//If on boat and go onto land, toggle boat		
+						if(pathInventory.isOnBoat()){
+							if(n.getItem() == '~'){
+								newPath = currPath.clone();
+								newPath.addToPath(n);
+								
+								//Add to the frontier
+								pathsToVisit.add(newPath);
+							}
+						} else if(n.getItem() == ' '){	//If on boat and go onto land, toggle boat		
 							if(pathInventory.isOnBoat()){
 								pathInventory.toggleBoat();
 							}
@@ -110,20 +118,7 @@ public class Explore {
 									pathsToVisit.add(newPath);
 								}
 								
-							} else if(n.getItem() == '*'){				//If we encounter a wall and we have dynamite, add to frontier
-
-
-								if(pathInventory.getNumDynamite() > 1){	
-									//Use dynamite to expand and then clone
-									pathInventory.useDynamite();
-									newPath = currPath.clone();			
-									newPath.addToPath(n);
-									
-									//Add to the frontier
-									pathsToVisit.add(newPath);
-								}
-								
-							} else {									//If we encounter water and we're on a boat, add to frontier
+							} else if(n.getItem() == '~') {									//If we encounter water and we're on a boat, add to frontier
 								if(pathInventory.isOnBoat()){
 									newPath = currPath.clone();			
 									newPath.addToPath(n);
@@ -132,14 +127,7 @@ public class Explore {
 									pathsToVisit.add(newPath);
 								}
 							}
-						} else if(n.getItem() == 'B'){					//If item expanded is a boat
-							newPath = currPath.clone();
-							newPath.addToPath(n);
-							pathInventory.toggleBoat();
-							
-							//Add to the frontier
-							pathsToVisit.add(newPath);
-						} 
+						}
 					} 
 				}	
 			}	

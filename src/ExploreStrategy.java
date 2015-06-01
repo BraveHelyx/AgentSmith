@@ -14,6 +14,7 @@ public class ExploreStrategy implements Strategy{
 		
 		Explore explore = new Explore(localMap, inventory);
 		path = explore.findPath();
+			
 		return path;	
 	}
 }
